@@ -38,6 +38,7 @@ public class MultiSearchBar extends FrameLayout {
 	private OnClickListener leftButtonOnClick;
 	private AppCompatTextView titleText2;
 	private View midLine;
+	private String title2;
 
 	public MultiSearchBar(@NonNull Context context) {
 		super(context);
@@ -70,15 +71,15 @@ public class MultiSearchBar extends FrameLayout {
 	}
 
 	private void init(Context context, AttributeSet attrs) {
-		layout = inflate(context, R.layout.simple_search_bar, this);
-		leftButton = (AppCompatImageButton) layout.findViewById(R.id.simpleSearchBarButtonLeft);
-		searchButton = (AppCompatImageButton) layout.findViewById(R.id.simpleSearchBarButtonSearch);
-		cancelButton = (AppCompatButton) layout.findViewById(R.id.simpleSearchBarButtonCancel);
-		titleText1 = (AppCompatTextView) layout.findViewById(R.id.simpleSearchBarTextViewTitle1);
-		titleText2 = (AppCompatTextView) layout.findViewById(R.id.simpleSearchBarTextViewTitle2);
-		midLine = layout.findViewById(R.id.simpleSearchBarMidLine);
-		searchEdit = (AppCompatEditText) layout.findViewById(R.id.simpleSearchBarEditTextSearch);
-		underLine = layout.findViewById(R.id.simpleSearchBarLine);
+		layout = inflate(context, R.layout.multi_search_bar, this);
+		leftButton = (AppCompatImageButton) layout.findViewById(R.id.multiSearchBarButtonLeft);
+		searchButton = (AppCompatImageButton) layout.findViewById(R.id.multiSearchBarButtonSearch);
+		cancelButton = (AppCompatButton) layout.findViewById(R.id.multiSearchBarButtonCancel);
+		titleText1 = (AppCompatTextView) layout.findViewById(R.id.multiSearchBarTextViewTitle1);
+		titleText2 = (AppCompatTextView) layout.findViewById(R.id.multiSearchBarTextViewTitle2);
+		midLine = layout.findViewById(R.id.multiSearchBarMidLine);
+		searchEdit = (AppCompatEditText) layout.findViewById(R.id.multiSearchBarEditTextSearch);
+		underLine = layout.findViewById(R.id.multiSearchBarLine);
 		setupViews(attrs);
 	}
 
@@ -94,8 +95,10 @@ public class MultiSearchBar extends FrameLayout {
 				leftButton.setVisibility(INVISIBLE);
 				cancelButton.setVisibility(VISIBLE);
 				titleText1.setVisibility(INVISIBLE);
-				midLine.setVisibility(INVISIBLE);
-				titleText2.setVisibility(INVISIBLE);
+				if (TextUtils.isEmpty(title2)) {
+					midLine.setVisibility(GONE);
+					titleText2.setVisibility(GONE);
+				}
 				underLine.setVisibility(VISIBLE);
 
 				ObjectAnimator.ofFloat(searchButton, "translationX", -searchButton.getX()).start();
@@ -122,8 +125,10 @@ public class MultiSearchBar extends FrameLayout {
 				underLine.setVisibility(GONE);
 				cancelButton.setVisibility(INVISIBLE);
 				titleText1.setVisibility(VISIBLE);
-				midLine.setVisibility(VISIBLE);
-				titleText2.setVisibility(VISIBLE);
+				if (!TextUtils.isEmpty(title2)) {
+					midLine.setVisibility(VISIBLE);
+					titleText2.setVisibility(VISIBLE);
+				}
 				searchEdit.setVisibility(View.INVISIBLE);
 
 				ObjectAnimator.ofFloat(searchButton, "translationX", 0).start();
@@ -153,12 +158,12 @@ public class MultiSearchBar extends FrameLayout {
 	private void parseXml(AttributeSet attrs) {
 		TypedArray typedArray = getContext().obtainStyledAttributes(attrs, R.styleable.MultiSearchBar);
 
-		String title = typedArray.getString(R.styleable.MultiSearchBar_simple_search_bar_title1);
+		String title = typedArray.getString(R.styleable.MultiSearchBar_multi_search_bar_title1);
 		if (title != null) {
 			setTitle(title);
 		}
 
-		String title2 = typedArray.getString(R.styleable.MultiSearchBar_simple_search_bar_title2);
+		title2 = typedArray.getString(R.styleable.MultiSearchBar_multi_search_bar_title2);
 		if (TextUtils.isEmpty(title2)) {
 			midLine.setVisibility(GONE);
 			titleText2.setVisibility(GONE);
@@ -166,7 +171,7 @@ public class MultiSearchBar extends FrameLayout {
 			titleText2.setText(title2);
 		}
 
-		String hint = typedArray.getString(R.styleable.MultiSearchBar_simple_search_bar_hint);
+		String hint = typedArray.getString(R.styleable.MultiSearchBar_multi_search_bar_hint);
 		if (hint != null) {
 			searchEdit.setHint(hint);
 		}
