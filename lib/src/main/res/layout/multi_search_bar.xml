@@ -71,7 +71,7 @@
 			/>
 		<View
 			android:layout_width="1dp"
-			android:layout_height="0dp"
+			android:layout_height="24dp"
 			android:id="@+id/multiSearchBarMidLine"
 			android:background="@drawable/shape_mid_line"
 			search:layout_constraintLeft_toRightOf="@+id/multiSearchBarTextViewTitle1"

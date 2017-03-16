@@ -95,10 +95,8 @@ public class MultiSearchBar extends FrameLayout {
 				leftButton.setVisibility(INVISIBLE);
 				cancelButton.setVisibility(VISIBLE);
 				titleText1.setVisibility(INVISIBLE);
-				if (TextUtils.isEmpty(title2)) {
-					midLine.setVisibility(GONE);
-					titleText2.setVisibility(GONE);
-				}
+				midLine.setVisibility(GONE);
+				titleText2.setVisibility(GONE);
 				underLine.setVisibility(VISIBLE);
 
 				ObjectAnimator.ofFloat(searchButton, "translationX", -searchButton.getX()).start();
