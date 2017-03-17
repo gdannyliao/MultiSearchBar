@@ -19,9 +19,11 @@
 	<com.ggdsn.multisearchbar.MultiSearchBar
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
-		app:multi_search_bar_title1="@string/app_name"
-		app:multi_search_bar_title2="MultiSearchBar"
-		app:multi_search_bar_hint="城市搜索"
+		app:multiSearchBarMode="Three"
+		app:multiSearchBarTitle1="@string/app_name"
+		app:multiSearchBarTitle2="MultiSearchBar"
+		app:multiSearchBarHint1="城市搜索"
+		app:multiSearchBarHint3="吃些什么"
 		app:layout_constraintLeft_toLeftOf="parent"
 		app:layout_constraintRight_toRightOf="parent"
 		/>

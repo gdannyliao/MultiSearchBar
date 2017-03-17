@@ -1,11 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 	<declare-styleable name="MultiSearchBar">
-		<attr name="multi_search_bar_title1"
+		<attr name="multiSearchBarTitle1"
 			format="string"/>
-		<attr name="multi_search_bar_title2"
+		<attr name="multiSearchBarTitle2"
 			format="string"/>
-		<attr name="multi_search_bar_hint"
+		<attr name="multiSearchBarHint1"
 			format="string"/>
+		<attr name="multiSearchBarHint2"
+			format="string"/>
+		<attr name="multiSearchBarHint3"
+			format="string"/>
+		<attr name="multiSearchBarMode"
+			format="enum">
+			<enum name="One"
+				value="0"/>
+			<enum value="1"
+				name="Three"/>
+		</attr>
 	</declare-styleable>
 </resources>
