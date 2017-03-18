@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:search="http://schemas.android.com/apk/res-auto"
-	xmlns:tools="http://schemas.android.com/tools"
 	android:layout_width="match_parent"
 	android:layout_height="64dp"
 	android:background="@color/black2A"
@@ -17,7 +16,7 @@
 		android:background="@null"
 		search:layout_constraintTop_toTopOf="parent"
 		search:layout_constraintBottom_toBottomOf="parent"
-		tools:layout_editor_absoluteX="0dp"
+		search:layout_constraintLeft_toLeftOf="parent"
 		/>
 	<android.support.v7.widget.AppCompatImageButton
 		android:layout_width="wrap_content"
@@ -32,16 +31,13 @@
 		/>
 	<android.support.v7.widget.AppCompatButton
 		android:text="取消"
-		android:layout_width="wrap_content"
+		android:layout_width="64dp"
 		android:layout_height="wrap_content"
 		android:id="@+id/multiSearchBarButtonCancel"
-		android:background="@null"
 		android:textColor="@android:color/white"
 		android:visibility="invisible"
-		android:textSize="18sp"
-		android:layout_alignParentTop="true"
-		android:layout_alignParentRight="true"
-		android:layout_alignParentEnd="true"
+		android:background="@null"
+		android:textSize="16sp"
 		search:layout_constraintRight_toRightOf="parent"
 		search:layout_constraintTop_toBottomOf="parent"
 		search:layout_constraintBottom_toBottomOf="parent"
@@ -71,7 +67,8 @@
 			/>
 		<View
 			android:layout_width="1dp"
-			android:layout_height="24dp"
+			android:layout_height="16dp"
+			android:layout_margin="8dp"
 			android:id="@+id/multiSearchBarMidLine"
 			android:background="@drawable/shape_mid_line"
 			search:layout_constraintLeft_toRightOf="@+id/multiSearchBarTextViewTitle1"
@@ -105,10 +102,11 @@
 		search:layout_constraintRight_toLeftOf="@+id/multiSearchBarEditTextSearch2"
 		search:layout_constraintBaseline_toBaselineOf="@+id/multiSearchBarButtonCancel"
 		search:layout_constraintHorizontal_bias="0.0"
+		android:maxLength="3"
 		/>
 	<View
 		android:layout_width="1dp"
-		android:layout_height="24dp"
+		android:layout_height="16dp"
 		android:id="@+id/multiSearchBarMidLine2"
 		android:background="@drawable/shape_mid_line"
 		search:layout_constraintLeft_toRightOf="@+id/multiSearchBarEditTextSearch1"
@@ -127,10 +125,11 @@
 		search:layout_constraintRight_toLeftOf="@+id/multiSearchBarMidLine3"
 		android:minWidth="24dp"
 		android:visibility="gone"
+		android:maxLength="6"
 		/>
 	<View
 		android:layout_width="1dp"
-		android:layout_height="24dp"
+		android:layout_height="16dp"
 		android:id="@+id/multiSearchBarMidLine3"
 		android:background="@drawable/shape_mid_line"
 		search:layout_constraintLeft_toRightOf="@+id/multiSearchBarEditTextSearch2"
@@ -149,6 +148,7 @@
 		search:layout_constraintRight_toLeftOf="@id/multiSearchBarButtonCancel"
 		android:minWidth="24dp"
 		android:visibility="gone"
+		android:maxLength="6"
 		/>
 	<View
 		android:layout_width="0dp"
@@ -156,6 +156,7 @@
 		android:id="@+id/multiSearchBarLine"
 		android:background="@drawable/shape_line"
 		android:layout_marginLeft="@dimen/multiSearchBarMargin"
+		android:layout_marginTop="8dp"
 		android:visibility="gone"
 		search:layout_constraintTop_toBottomOf="@+id/multiSearchBarEditTextSearch1"
 		search:layout_constraintLeft_toLeftOf="parent"
