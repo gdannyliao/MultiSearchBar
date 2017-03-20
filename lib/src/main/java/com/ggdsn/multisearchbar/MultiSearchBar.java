@@ -345,6 +345,11 @@ public class MultiSearchBar extends FrameLayout {
 
 		mode = Mode.values()[typedArray.getInt(R.styleable.MultiSearchBar_multiSearchBarMode, Mode.One.ordinal())];
 
+		int leftDrawableId = typedArray.getResourceId(R.styleable.MultiSearchBar_multiSearchBarLeftSrc, -1);
+		if (leftDrawableId != -1) {
+			leftButton.setImageResource(leftDrawableId);
+		}
+
 		String title = typedArray.getString(R.styleable.MultiSearchBar_multiSearchBarTitle1);
 		setTitle1(title);
 

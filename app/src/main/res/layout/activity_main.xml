@@ -14,6 +14,7 @@
 		app:multiSearchBarTitle2="MultiSearchBar"
 		app:multiSearchBarHint1="城市"
 		app:multiSearchBarHint3="吃些什么"
+		app:multiSearchBarLeftSrc="@drawable/ic_arrow_back_24dp"
 		android:id="@+id/title1"
 		/>
 
@@ -23,7 +24,7 @@
 		android:layout_below="@id/title1"
 		app:multiSearchBarTitle1="切换城市"
 		app:multiSearchBarHint1="城市名或拼音"
-
+		android:id="@+id/title2"
 		/>
 
 </RelativeLayout>
