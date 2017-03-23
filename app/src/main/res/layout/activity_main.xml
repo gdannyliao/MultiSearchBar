@@ -9,7 +9,7 @@
 	<com.ggdsn.multisearchbar.MultiSearchBar
 		android:layout_width="match_parent"
 		android:layout_height="?actionBarSize"
-		app:multiSearchBarMode="Three"
+		app:multiSearchBarType="Three"
 		app:multiSearchBarTitle1="@string/app_name"
 		app:multiSearchBarTitle2="MultiSearchBar"
 		app:multiSearchBarHint1="城市"

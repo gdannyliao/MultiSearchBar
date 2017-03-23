@@ -13,7 +13,7 @@
 			format="string"/>
 		<attr name="multiSearchBarLeftSrc"
 			format="reference"/>
-		<attr name="multiSearchBarMode"
+		<attr name="multiSearchBarType"
 			format="enum">
 			<enum name="One"
 				value="0"/>

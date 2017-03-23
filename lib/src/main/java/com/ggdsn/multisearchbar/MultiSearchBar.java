@@ -32,12 +32,24 @@ import android.widget.FrameLayout;
 
 public class MultiSearchBar extends FrameLayout {
 
-	public enum Mode {
+	private OnModeChangedListener onModeChangedListener;
+
+	public interface OnModeChangedListener {
+		void onNewMode(Mode newMode);
+	}
+
+	public enum Type {
 		One, Three
 	}
 
-	private Mode mode;
+	public enum Mode {
+		Normal, Input
+	}
+
+	private Type type;
+	private Mode mode = Mode.Normal;
 	private static final String TAG = "MultiSearchBar";
+	private OnClickListener cancelButtonOnClickListener;
 
 	private View layout;
 	private AppCompatImageButton leftButton;
@@ -47,7 +59,6 @@ public class MultiSearchBar extends FrameLayout {
 	private AppCompatEditText searchEdit1;
 	private AppCompatEditText searchEdit2;
 	private AppCompatEditText searchEdit3;
-	private boolean isInInputMode = false;
 	private View underLine;
 	private OnClickListener leftButtonOnClick;
 	private AppCompatTextView titleText2;
@@ -75,16 +86,32 @@ public class MultiSearchBar extends FrameLayout {
 		this.leftButtonOnClick = leftButtonOnClick;
 	}
 
+	public void setCancelButtonOnClickListener(OnClickListener cancelButtonOnClickListener) {
+		this.cancelButtonOnClickListener = cancelButtonOnClickListener;
+	}
+
 	public void addTextChangedListener1(TextWatcher watcher) {
 		searchEdit1.addTextChangedListener(watcher);
+	}
+
+	public void removeTextChangedListener1(TextWatcher watcher) {
+		searchEdit1.removeTextChangedListener(watcher);
 	}
 
 	public void addTextChangedListener2(TextWatcher watcher) {
 		searchEdit2.addTextChangedListener(watcher);
 	}
 
+	public void removeTextChangedListener2(TextWatcher watcher) {
+		searchEdit2.removeTextChangedListener(watcher);
+	}
+
 	public void addTextChangedListener3(TextWatcher watcher) {
 		searchEdit3.addTextChangedListener(watcher);
+	}
+
+	public void removeTextChangedListener3(TextWatcher watcher) {
+		searchEdit3.removeTextChangedListener(watcher);
 	}
 
 	public void setTitle1(String title) {
@@ -100,15 +127,42 @@ public class MultiSearchBar extends FrameLayout {
 		}
 		title2 = title;
 		titleText2.setText(title2);
-		if (isInInputMode) {
+		if (mode == Mode.Input) {
 			return;
 		}
 		midLine.setVisibility(VISIBLE);
 		titleText2.setVisibility(VISIBLE);
 	}
 
+	public Type getType() {
+		return type;
+	}
+
+	public void switchMode(Mode newMode) {
+		switchMode(newMode, true);
+	}
+
+	public void switchMode(Mode newMode, boolean withAnimation) {
+		if (mode == newMode) {
+			return;
+		}
+
+		switch (newMode) {
+			case Normal:
+				toNormalMode(true);
+				break;
+			case Input:
+				toInputMode(true);
+				break;
+		}
+	}
+
 	public Mode getMode() {
 		return mode;
+	}
+
+	public void setOnModeChangedListener(OnModeChangedListener listener) {
+		onModeChangedListener = listener;
 	}
 
 	private void init(Context context, AttributeSet attrs) {
@@ -132,101 +186,16 @@ public class MultiSearchBar extends FrameLayout {
 		parseXml(attrs);
 		searchButton.setOnClickListener(new OnClickListener() {
 			@Override public void onClick(View v) {
-				if (isInInputMode) {
-					return;
-				}
-
-				isInInputMode = true;
-				leftButton.setVisibility(INVISIBLE);
-				cancelButton.setVisibility(VISIBLE);
-				titleText1.setVisibility(INVISIBLE);
-				midLine.setVisibility(GONE);
-				titleText2.setVisibility(GONE);
-				underLine.setVisibility(VISIBLE);
-
-				ObjectAnimator.ofFloat(searchButton, TRANSLATION_X, -searchButton.getX()).start();
-				TransitionDrawable drawable = (TransitionDrawable) searchButton.getDrawable();
-				drawable.startTransition(100);
-
-				AlphaAnimation searchEditAnim = new AlphaAnimation(0f, 1f);
-				searchEditAnim.setDuration(300);
-				switch (mode) {
-					case One:
-						midLine2.setVisibility(GONE);
-						midLine3.setVisibility(GONE);
-						searchEdit2.setVisibility(GONE);
-						searchEdit3.setVisibility(GONE);
-
-						searchEdit1.startAnimation(searchEditAnim);
-						searchEdit1.setVisibility(VISIBLE);
-						searchEdit1.requestFocus();
-						showKeyboard(searchEdit1);
-						break;
-					case Three:
-						AlphaAnimation searchBtnAnim = new AlphaAnimation(1f, 0f);
-						searchBtnAnim.setDuration(300);
-						searchBtnAnim.setAnimationListener(new Animation.AnimationListener() {
-							@Override public void onAnimationStart(Animation animation) {
-
-							}
-
-							@Override public void onAnimationEnd(Animation animation) {
-								searchButton.setVisibility(GONE);
-							}
-
-							@Override public void onAnimationRepeat(Animation animation) {
-
-							}
-						});
-						searchButton.startAnimation(searchBtnAnim);
-						leftButton.setVisibility(GONE);
-
-						searchEdit1.startAnimation(searchEditAnim);
-						searchEdit1.setVisibility(VISIBLE);
-
-						midLine2.setVisibility(VISIBLE);
-						midLine2.startAnimation(searchEditAnim);
-						midLine3.setVisibility(VISIBLE);
-						midLine3.startAnimation(searchEditAnim);
-						searchEdit2.setVisibility(VISIBLE);
-						searchEdit2.startAnimation(searchEditAnim);
-						searchEdit3.setVisibility(VISIBLE);
-						searchEdit3.startAnimation(searchEditAnim);
-
-						searchEdit3.requestFocus();
-						showKeyboard(searchEdit3);
-						break;
-				}
+				toInputMode(true);
 			}
 		});
 
 		cancelButton.setOnClickListener(new OnClickListener() {
 			@Override public void onClick(View v) {
-				if (!isInInputMode) {
-					return;
+				if (cancelButtonOnClickListener != null) {
+					cancelButtonOnClickListener.onClick(v);
 				}
-				leftButton.setVisibility(VISIBLE);
-				underLine.setVisibility(GONE);
-				cancelButton.setVisibility(INVISIBLE);
-				titleText1.setVisibility(VISIBLE);
-				if (!TextUtils.isEmpty(title2)) {
-					midLine.setVisibility(VISIBLE);
-					titleText2.setVisibility(VISIBLE);
-				}
-				searchEdit1.setVisibility(View.INVISIBLE);
-				searchEdit2.setVisibility(GONE);
-				searchEdit3.setVisibility(GONE);
-				midLine2.setVisibility(GONE);
-				midLine3.setVisibility(GONE);
-				searchButton.setVisibility(VISIBLE);
-
-				ObjectAnimator.ofFloat(searchButton, TRANSLATION_X, 0).start();
-				TransitionDrawable drawable = (TransitionDrawable) searchButton.getDrawable();
-				drawable.reverseTransition(100);
-
-				layout.requestFocus();
-				closeSoftKeyboard(layout);
-				isInInputMode = false;
+				toNormalMode(true);
 			}
 		});
 
@@ -249,11 +218,125 @@ public class MultiSearchBar extends FrameLayout {
 		//searchEdit3.setOnFocusChangeListener(focusChangeListener);
 	}
 
+	private void toInputMode(boolean withAnimation) {
+		// TODO: 22/03/2017 添加动画开关
+		if (mode == Mode.Input) {
+			return;
+		}
+
+		mode = Mode.Input;
+		leftButton.setVisibility(INVISIBLE);
+		cancelButton.setVisibility(VISIBLE);
+		titleText1.setVisibility(INVISIBLE);
+		midLine.setVisibility(GONE);
+		titleText2.setVisibility(GONE);
+		underLine.setVisibility(VISIBLE);
+
+		ObjectAnimator.ofFloat(searchButton, TRANSLATION_X, -searchButton.getX()).start();
+		TransitionDrawable drawable = (TransitionDrawable) searchButton.getDrawable();
+		drawable.startTransition(100);
+
+		AlphaAnimation searchEditAnim = new AlphaAnimation(0f, 1f);
+		searchEditAnim.setDuration(300);
+		switch (type) {
+			case One:
+				midLine2.setVisibility(GONE);
+				midLine3.setVisibility(GONE);
+				searchEdit2.setVisibility(GONE);
+				searchEdit3.setVisibility(GONE);
+
+				searchEdit1.startAnimation(searchEditAnim);
+				searchEdit1.setVisibility(VISIBLE);
+				searchEdit1.requestFocus();
+				showKeyboard(searchEdit1);
+				break;
+			case Three:
+				AlphaAnimation searchBtnAnim = new AlphaAnimation(1f, 0f);
+				searchBtnAnim.setDuration(300);
+				searchBtnAnim.setAnimationListener(new Animation.AnimationListener() {
+					@Override public void onAnimationStart(Animation animation) {
+
+					}
+
+					@Override public void onAnimationEnd(Animation animation) {
+						searchButton.setVisibility(GONE);
+					}
+
+					@Override public void onAnimationRepeat(Animation animation) {
+
+					}
+				});
+				searchButton.startAnimation(searchBtnAnim);
+				leftButton.setVisibility(GONE);
+
+				searchEdit1.startAnimation(searchEditAnim);
+				searchEdit1.setVisibility(VISIBLE);
+
+				midLine2.setVisibility(VISIBLE);
+				midLine2.startAnimation(searchEditAnim);
+				midLine3.setVisibility(VISIBLE);
+				midLine3.startAnimation(searchEditAnim);
+				searchEdit2.setVisibility(VISIBLE);
+				searchEdit2.startAnimation(searchEditAnim);
+				searchEdit3.setVisibility(VISIBLE);
+				searchEdit3.startAnimation(searchEditAnim);
+
+				searchEdit3.requestFocus();
+				showKeyboard(searchEdit3);
+				break;
+		}
+		if (onModeChangedListener != null) {
+			onModeChangedListener.onNewMode(mode);
+		}
+	}
+
+	private void toNormalMode(boolean withAnimation) {
+
+		if (mode == Mode.Normal) {
+			return;
+		}
+		mode = Mode.Normal;
+
+		leftButton.setVisibility(VISIBLE);
+		underLine.setVisibility(GONE);
+		cancelButton.setVisibility(INVISIBLE);
+		titleText1.setVisibility(VISIBLE);
+		if (!TextUtils.isEmpty(title2)) {
+			midLine.setVisibility(VISIBLE);
+			titleText2.setVisibility(VISIBLE);
+		}
+		searchEdit1.setVisibility(View.INVISIBLE);
+		searchEdit2.setVisibility(GONE);
+		searchEdit3.setVisibility(GONE);
+		midLine2.setVisibility(GONE);
+		midLine3.setVisibility(GONE);
+
+		switch (type) {
+			case Three:
+				AlphaAnimation searchBtnAnim = new AlphaAnimation(0f, 1f);
+				searchBtnAnim.setDuration(300);
+				searchButton.setAnimation(searchBtnAnim);
+				break;
+		}
+		searchButton.setVisibility(VISIBLE);
+
+		ObjectAnimator.ofFloat(searchButton, TRANSLATION_X, 0).start();
+		TransitionDrawable drawable = (TransitionDrawable) searchButton.getDrawable();
+		drawable.reverseTransition(100);
+
+		layout.requestFocus();
+		closeSoftKeyboard(layout);
+
+		if (onModeChangedListener != null) {
+			onModeChangedListener.onNewMode(mode);
+		}
+	}
+
 	private class FocusChangeListener implements OnFocusChangeListener {
 
 		@Override public void onFocusChange(View v, boolean hasFocus) {
 			Log.d(TAG, "onFocusChange() called with: v = [" + v + "], hasFocus = [" + hasFocus + "]");
-			if (mode == Mode.Three) {
+			if (type == Type.Three) {
 				if (hasFocus) {
 					AnimationListener listener;
 					int width = v.getMeasuredWidth();
@@ -343,7 +426,7 @@ public class MultiSearchBar extends FrameLayout {
 	private void parseXml(AttributeSet attrs) {
 		TypedArray typedArray = getContext().obtainStyledAttributes(attrs, R.styleable.MultiSearchBar);
 
-		mode = Mode.values()[typedArray.getInt(R.styleable.MultiSearchBar_multiSearchBarMode, Mode.One.ordinal())];
+		type = Type.values()[typedArray.getInt(R.styleable.MultiSearchBar_multiSearchBarType, Type.One.ordinal())];
 
 		int leftDrawableId = typedArray.getResourceId(R.styleable.MultiSearchBar_multiSearchBarLeftSrc, -1);
 		if (leftDrawableId != -1) {
