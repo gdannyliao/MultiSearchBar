@@ -17,7 +17,6 @@ import android.support.v7.widget.AppCompatTextView;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AlphaAnimation;
@@ -33,6 +32,13 @@ import android.widget.FrameLayout;
 public class MultiSearchBar extends FrameLayout {
 
 	private OnModeChangedListener onModeChangedListener;
+	private OnFocusChangeListener onFocusChangeListener1;
+	private OnFocusChangeListener onFocusChangeListener2;
+	private OnFocusChangeListener onFocusChangeListener3;
+	/**
+	 * 由于更改view的可见性会影响focus，所以当切换mode时会有好多focus change触发，用这个标记来适当屏蔽一些focus change事件
+	 */
+	private boolean permitFocus;
 
 	public interface OnModeChangedListener {
 		void onNewMode(Mode newMode);
@@ -112,6 +118,18 @@ public class MultiSearchBar extends FrameLayout {
 
 	public void removeTextChangedListener3(TextWatcher watcher) {
 		searchEdit3.removeTextChangedListener(watcher);
+	}
+
+	public void setOnFocusChangeListener1(OnFocusChangeListener l) {
+		onFocusChangeListener1 = l;
+	}
+
+	public void setOnFocusChangeListener2(OnFocusChangeListener l) {
+		onFocusChangeListener2 = l;
+	}
+
+	public void setOnFocusChangeListener3(OnFocusChangeListener l) {
+		onFocusChangeListener3 = l;
 	}
 
 	public void setTitle1(String title) {
@@ -212,10 +230,10 @@ public class MultiSearchBar extends FrameLayout {
 			}
 		});
 
-		//FocusChangeListener focusChangeListener = new FocusChangeListener();
-		//searchEdit1.setOnFocusChangeListener(focusChangeListener);
-		//searchEdit2.setOnFocusChangeListener(focusChangeListener);
-		//searchEdit3.setOnFocusChangeListener(focusChangeListener);
+		FocusChangeListener focusChangeListener = new FocusChangeListener();
+		searchEdit1.setOnFocusChangeListener(focusChangeListener);
+		searchEdit2.setOnFocusChangeListener(focusChangeListener);
+		searchEdit3.setOnFocusChangeListener(focusChangeListener);
 	}
 
 	private void toInputMode(boolean withAnimation) {
@@ -247,6 +265,8 @@ public class MultiSearchBar extends FrameLayout {
 
 				searchEdit1.startAnimation(searchEditAnim);
 				searchEdit1.setVisibility(VISIBLE);
+
+				permitFocus = true;
 				searchEdit1.requestFocus();
 				showKeyboard(searchEdit1);
 				break;
@@ -281,6 +301,7 @@ public class MultiSearchBar extends FrameLayout {
 				searchEdit3.setVisibility(VISIBLE);
 				searchEdit3.startAnimation(searchEditAnim);
 
+				permitFocus = true;
 				searchEdit3.requestFocus();
 				showKeyboard(searchEdit3);
 				break;
@@ -296,6 +317,12 @@ public class MultiSearchBar extends FrameLayout {
 			return;
 		}
 		mode = Mode.Normal;
+
+		View focus = layout.findFocus();
+		if (focus != null) {
+			focus.clearFocus();
+		}
+		permitFocus = false;
 
 		leftButton.setVisibility(VISIBLE);
 		underLine.setVisibility(GONE);
@@ -324,7 +351,7 @@ public class MultiSearchBar extends FrameLayout {
 		TransitionDrawable drawable = (TransitionDrawable) searchButton.getDrawable();
 		drawable.reverseTransition(100);
 
-		layout.requestFocus();
+		//layout.requestFocus();
 		closeSoftKeyboard(layout);
 
 		if (onModeChangedListener != null) {
@@ -335,56 +362,75 @@ public class MultiSearchBar extends FrameLayout {
 	private class FocusChangeListener implements OnFocusChangeListener {
 
 		@Override public void onFocusChange(View v, boolean hasFocus) {
-			Log.d(TAG, "onFocusChange() called with: v = [" + v + "], hasFocus = [" + hasFocus + "]");
-			if (type == Type.Three) {
-				if (hasFocus) {
-					AnimationListener listener;
-					int width = v.getMeasuredWidth();
-					if (searchEdit1 == v) {
-						listener = new AnimationListener(width, v, searchEdit2, searchEdit3);
-					} else if (searchEdit2 == v) {
-						listener = new AnimationListener(width, v, searchEdit1, searchEdit3);
-					} else {
-						listener = new AnimationListener(width, v, searchEdit2, searchEdit1);
+			//Log.d(TAG, "onFocusChange() called with: v = [" + v + "], hasFocus = [" + hasFocus + "]");
+			if (permitFocus) {
+				int i = v.getId();
+				if (i == R.id.multiSearchBarEditTextSearch1) {
+					if (onFocusChangeListener1 == null) {
+						return;
 					}
-					ValueAnimator anim = ValueAnimator.ofInt(width, width + 10);
-					anim.addUpdateListener(listener);
-					anim.setDuration(300);
-					anim.start();
-				} else {
-					ViewGroup.LayoutParams layoutParams = v.getLayoutParams();
-					layoutParams.width -= increaseEdit1;
-					v.setLayoutParams(layoutParams);
-
-					if (searchEdit1 == v) {
-						layoutParams = searchEdit2.getLayoutParams();
-						layoutParams.width += increaseEdit2;
-						searchEdit2.setLayoutParams(layoutParams);
-
-						layoutParams = searchEdit3.getLayoutParams();
-						layoutParams.width += increaseEdit2;
-						searchEdit3.setLayoutParams(layoutParams);
-					} else if (searchEdit2 == v) {
-						layoutParams = searchEdit1.getLayoutParams();
-						layoutParams.width += increaseEdit2;
-						searchEdit1.setLayoutParams(layoutParams);
-
-						layoutParams = searchEdit3.getLayoutParams();
-						layoutParams.width += increaseEdit2;
-						searchEdit3.setLayoutParams(layoutParams);
-					} else {
-						layoutParams = searchEdit2.getLayoutParams();
-						layoutParams.width += increaseEdit2;
-						searchEdit2.setLayoutParams(layoutParams);
-
-						layoutParams = searchEdit1.getLayoutParams();
-						layoutParams.width += increaseEdit2;
-						searchEdit1.setLayoutParams(layoutParams);
+					onFocusChangeListener1.onFocusChange(v, hasFocus);
+				} else if (i == R.id.multiSearchBarEditTextSearch2) {
+					if (onFocusChangeListener2 == null) {
+						return;
 					}
-
-					increaseEdit1 = increaseEdit2 = 0;
+					onFocusChangeListener2.onFocusChange(v, hasFocus);
+				} else if (i == R.id.multiSearchBarEditTextSearch3) {
+					if (onFocusChangeListener3 == null) {
+						return;
+					}
+					onFocusChangeListener3.onFocusChange(v, hasFocus);
 				}
 			}
+			//if (type == Type.Three) {
+			//	if (hasFocus) {
+			//		AnimationListener listener;
+			//		int width = v.getMeasuredWidth();
+			//		if (searchEdit1 == v) {
+			//			listener = new AnimationListener(width, v, searchEdit2, searchEdit3);
+			//		} else if (searchEdit2 == v) {
+			//			listener = new AnimationListener(width, v, searchEdit1, searchEdit3);
+			//		} else {
+			//			listener = new AnimationListener(width, v, searchEdit2, searchEdit1);
+			//		}
+			//		ValueAnimator anim = ValueAnimator.ofInt(width, width + 10);
+			//		anim.addUpdateListener(listener);
+			//		anim.setDuration(300);
+			//		anim.start();
+			//	} else {
+			//		ViewGroup.LayoutParams layoutParams = v.getLayoutParams();
+			//		layoutParams.width -= increaseEdit1;
+			//		v.setLayoutParams(layoutParams);
+			//
+			//		if (searchEdit1 == v) {
+			//			layoutParams = searchEdit2.getLayoutParams();
+			//			layoutParams.width += increaseEdit2;
+			//			searchEdit2.setLayoutParams(layoutParams);
+			//
+			//			layoutParams = searchEdit3.getLayoutParams();
+			//			layoutParams.width += increaseEdit2;
+			//			searchEdit3.setLayoutParams(layoutParams);
+			//		} else if (searchEdit2 == v) {
+			//			layoutParams = searchEdit1.getLayoutParams();
+			//			layoutParams.width += increaseEdit2;
+			//			searchEdit1.setLayoutParams(layoutParams);
+			//
+			//			layoutParams = searchEdit3.getLayoutParams();
+			//			layoutParams.width += increaseEdit2;
+			//			searchEdit3.setLayoutParams(layoutParams);
+			//		} else {
+			//			layoutParams = searchEdit2.getLayoutParams();
+			//			layoutParams.width += increaseEdit2;
+			//			searchEdit2.setLayoutParams(layoutParams);
+			//
+			//			layoutParams = searchEdit1.getLayoutParams();
+			//			layoutParams.width += increaseEdit2;
+			//			searchEdit1.setLayoutParams(layoutParams);
+			//		}
+			//
+			//		increaseEdit1 = increaseEdit2 = 0;
+			//	}
+			//}
 		}
 	}
 

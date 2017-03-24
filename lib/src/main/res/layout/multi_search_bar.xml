@@ -7,6 +7,18 @@
 	android:gravity="center_vertical"
 	>
 
+	<!--这个linear layout用于防止 第一个edittext自动获得焦点-->
+	<!--见http://stackoverflow.com/questions/1555109/stop-edittext-from-gaining-focus-at-activity-startup-->
+	<LinearLayout
+		android:focusable="true"
+		android:focusableInTouchMode="true"
+		android:layout_width="0px"
+		android:layout_height="0px"
+		search:layout_constraintTop_toTopOf="parent"
+		search:layout_constraintLeft_toLeftOf="parent"
+		/>
+
+
 	<android.support.v7.widget.AppCompatImageButton
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
@@ -103,6 +115,13 @@
 		search:layout_constraintBaseline_toBaselineOf="@+id/multiSearchBarButtonCancel"
 		search:layout_constraintHorizontal_bias="0.0"
 		android:maxLength="3"
+		android:maxLines="1"
+		android:nextFocusLeft="@id/multiSearchBarEditTextSearch1"
+		android:nextFocusUp="@id/multiSearchBarEditTextSearch1"
+		android:nextFocusDown="@id/multiSearchBarEditTextSearch1"
+		android:nextFocusRight="@+id/multiSearchBarEditTextSearch2"
+		android:singleLine="true"
+		android:imeOptions="actionNext"
 		/>
 	<View
 		android:layout_width="1dp"
@@ -126,6 +145,13 @@
 		android:minWidth="24dp"
 		android:visibility="gone"
 		android:maxLength="6"
+		android:maxLines="1"
+		android:nextFocusLeft="@id/multiSearchBarEditTextSearch1"
+		android:nextFocusRight="@+id/multiSearchBarEditTextSearch3"
+		android:nextFocusDown="@id/multiSearchBarEditTextSearch2"
+		android:nextFocusUp="@id/multiSearchBarEditTextSearch2"
+		android:singleLine="true"
+		android:imeOptions="actionNext"
 		/>
 	<View
 		android:layout_width="1dp"
@@ -149,6 +175,13 @@
 		android:minWidth="24dp"
 		android:visibility="gone"
 		android:maxLength="6"
+		android:maxLines="1"
+		android:nextFocusLeft="@id/multiSearchBarEditTextSearch2"
+		android:nextFocusRight="@id/multiSearchBarEditTextSearch3"
+		android:nextFocusDown="@id/multiSearchBarEditTextSearch3"
+		android:nextFocusUp="@id/multiSearchBarEditTextSearch3"
+		android:singleLine="true"
+		android:imeOptions="actionDone"
 		/>
 	<View
 		android:layout_width="0dp"
