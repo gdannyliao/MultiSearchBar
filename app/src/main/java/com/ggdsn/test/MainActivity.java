@@ -22,6 +22,9 @@ public class MainActivity extends AppCompatActivity implements View.OnFocusChang
 		searchBar1.setOnFocusChangeListener1(this);
 		searchBar1.setOnFocusChangeListener2(this);
 		searchBar1.setOnFocusChangeListener3(this);
+
+		searchBar1.setTitle2("北京国际财经中心周边的智能餐厅");
+
 		AppCompatEditText editText = (AppCompatEditText) searchBar1.findViewById(R.id.multiSearchBarEditTextSearch3);
 		editText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
 			@Override public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {

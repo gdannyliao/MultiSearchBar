@@ -1,9 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-	<style name="MultiSearchBarEditTextStyle" parent="Base.Widget.AppCompat.EditText">
+
+	<style name="MultiSearchBarEditTextStyle"
+		parent="Base.Widget.AppCompat.EditText">
 		<item name="android:textColorHint">@color/gray</item>
 		<item name="android:textColor">@android:color/white</item>
 		<item name="android:background">@null</item>
 		<item name="android:textCursorDrawable">@drawable/shape_cursor</item>
+	</style>
+
+	<style name="MultiSearchBarTextViewStyle"
+		parent="TextAppearance.AppCompat">
+		<item name="android:textColor">@android:color/white</item>
+	</style>
+
+	<style name="MultiSearchBarNormalTextViewStyle"
+		parent="MultiSearchBarTextViewStyle">
+		<item name="android:textSize">@dimen/multiSearchBarNormalTextSize</item>
+	</style>
+
+	<style name="MultiSearchBarTitleTextViewStyle"
+		parent="MultiSearchBarTextViewStyle">
+		<item name="android:textSize">@dimen/multiSearchBarLargeTextSize</item>
 	</style>
 </resources>

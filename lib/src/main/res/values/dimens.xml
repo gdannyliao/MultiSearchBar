@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 	<dimen name="multiSearchBarMargin">12dp</dimen>
+	<dimen name="multiSearchBarNormalTextSize">15sp</dimen>
+	<dimen name="multiSearchBarLargeTextSize">17sp</dimen>
 </resources>
