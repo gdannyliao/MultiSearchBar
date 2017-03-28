@@ -31,6 +31,7 @@ import android.widget.FrameLayout;
 
 public class MultiSearchBar extends FrameLayout {
 
+	private static final float MAX_SINGLE_SEARCH_DP_WIDTH = 240f;
 	private OnModeChangedListener onModeChangedListener;
 	private OnFocusChangeListener onFocusChangeListener1;
 	private OnFocusChangeListener onFocusChangeListener2;
@@ -494,6 +495,9 @@ public class MultiSearchBar extends FrameLayout {
 		if (hint1 != null) {
 			searchEdit1.setHint(hint1);
 		}
+		if (type == Type.One) {
+			searchEdit1.setMaxWidth(toPixels(getContext(), MAX_SINGLE_SEARCH_DP_WIDTH));
+		}
 
 		String hint2 = typedArray.getString(R.styleable.MultiSearchBar_multiSearchBarHint2);
 		if (hint2 != null) {
@@ -526,5 +530,12 @@ public class MultiSearchBar extends FrameLayout {
 	private void closeSoftKeyboard(View focused) {
 		InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
 		imm.hideSoftInputFromWindow(focused.getWindowToken(), 0);
+	}
+
+	private static int toPixels(Context context, float dp) {
+		final float scale = context.getResources().getDisplayMetrics().density;
+		// Convert the dps to pixels, based on density scale
+		//在转换时加上 0.5f，将该数字四舍五入到最接近的整数
+		return (int) (dp * scale + 0.5f);
 	}
 }

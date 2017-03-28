@@ -28,4 +28,4 @@
 		android:id="@+id/title2"
 		/>
 
-</RelativeLayout>
+</LinearLayout>
