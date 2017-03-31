@@ -15,7 +15,7 @@
 		app:multiSearchBarTitle2="MultiSearchBar"
 		app:multiSearchBarHint1="城市"
 		app:multiSearchBarHint3="吃些什么"
-		app:multiSearchBarLeftSrc="@drawable/ic_arrow_back_24dp"
+		app:multiSearchBarLeftSrc="@drawable/multi_search_bar_ic_arrow_back_24dp"
 		android:id="@+id/title1"
 		/>
 
