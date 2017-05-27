@@ -21,6 +21,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
+import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.FrameLayout;
@@ -46,7 +47,7 @@ public class MultiSearchBar extends FrameLayout {
 	}
 
 	public enum Type {
-		One, Three
+		One, Two, Three
 	}
 
 	public enum Mode {
@@ -257,6 +258,23 @@ public class MultiSearchBar extends FrameLayout {
 
 		AlphaAnimation searchEditAnim = new AlphaAnimation(0f, 1f);
 		searchEditAnim.setDuration(300);
+
+		AlphaAnimation searchBtnAnim = new AlphaAnimation(1f, 0f);
+		searchBtnAnim.setDuration(300);
+		searchBtnAnim.setAnimationListener(new Animation.AnimationListener() {
+			@Override public void onAnimationStart(Animation animation) {
+
+			}
+
+			@Override public void onAnimationEnd(Animation animation) {
+				searchButton.setVisibility(GONE);
+			}
+
+			@Override public void onAnimationRepeat(Animation animation) {
+
+			}
+		});
+
 		switch (type) {
 			case One:
 				midLine2.setVisibility(GONE);
@@ -271,22 +289,27 @@ public class MultiSearchBar extends FrameLayout {
 				searchEdit1.requestFocus();
 				showKeyboard(searchEdit1);
 				break;
+			case Two:
+				searchButton.startAnimation(searchBtnAnim);
+				leftButton.setVisibility(GONE);
+
+				midLine3.setVisibility(GONE);
+				searchEdit3.setVisibility(GONE);
+
+				searchEdit1.startAnimation(searchEditAnim);
+				searchEdit1.setVisibility(VISIBLE);
+
+				midLine2.startAnimation(searchEditAnim);
+				midLine2.setVisibility(VISIBLE);
+
+				searchEdit2.setVisibility(VISIBLE);
+				searchEdit2.startAnimation(searchEditAnim);
+				// FIXME: 26/05/2017 改变最小长度，免得太短太难点
+				permitFocus = true;
+				searchEdit1.requestFocus();
+				showKeyboard(searchEdit1);
+				break;
 			case Three:
-				AlphaAnimation searchBtnAnim = new AlphaAnimation(1f, 0f);
-				searchBtnAnim.setDuration(300);
-				searchBtnAnim.setAnimationListener(new Animation.AnimationListener() {
-					@Override public void onAnimationStart(Animation animation) {
-
-					}
-
-					@Override public void onAnimationEnd(Animation animation) {
-						searchButton.setVisibility(GONE);
-					}
-
-					@Override public void onAnimationRepeat(Animation animation) {
-
-					}
-				});
 				searchButton.startAnimation(searchBtnAnim);
 				leftButton.setVisibility(GONE);
 
@@ -303,8 +326,8 @@ public class MultiSearchBar extends FrameLayout {
 				searchEdit3.startAnimation(searchEditAnim);
 
 				permitFocus = true;
-				searchEdit3.requestFocus();
-				showKeyboard(searchEdit3);
+				searchEdit1.requestFocus();
+				showKeyboard(searchEdit1);
 				break;
 		}
 		if (onModeChangedListener != null) {
@@ -340,6 +363,7 @@ public class MultiSearchBar extends FrameLayout {
 		midLine3.setVisibility(GONE);
 
 		switch (type) {
+			case Two:
 			case Three:
 				AlphaAnimation searchBtnAnim = new AlphaAnimation(0f, 1f);
 				searchBtnAnim.setDuration(300);
@@ -495,8 +519,17 @@ public class MultiSearchBar extends FrameLayout {
 		if (hint1 != null) {
 			searchEdit1.setHint(hint1);
 		}
-		if (type == Type.One) {
-			searchEdit1.setMaxWidth(toPixels(getContext(), MAX_SINGLE_SEARCH_DP_WIDTH));
+
+		int maxWidth = toPixels(getContext(), MAX_SINGLE_SEARCH_DP_WIDTH);
+		switch (type) {
+			case One:
+				searchEdit1.setMaxWidth(maxWidth);
+				break;
+			case Two:
+				searchEdit1.setMaxWidth(maxWidth/2 - 2);
+				searchEdit2.setMaxWidth(maxWidth/2 - 2);
+				searchEdit2.setImeOptions(EditorInfo.IME_ACTION_DONE);
+				break;
 		}
 
 		String hint2 = typedArray.getString(R.styleable.MultiSearchBar_multiSearchBarHint2);

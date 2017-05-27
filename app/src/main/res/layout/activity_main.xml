@@ -28,4 +28,11 @@
 		android:id="@+id/title2"
 		/>
 
+	<com.ggdsn.multisearchbar.MultiSearchBar
+		android:layout_width="match_parent"
+		android:layout_height="?actionBarSize"
+		app:multiSearchBarTitle1="测试指定搜索框个数"
+		app:multiSearchBarType="Two"
+		android:id="@+id/title3"
+		/>
 </LinearLayout>
