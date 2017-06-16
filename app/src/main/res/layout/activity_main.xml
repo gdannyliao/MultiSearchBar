@@ -39,5 +39,7 @@
 		android:layout_height="?actionBarSize"
 		app:multiSearchBarType="Popup"
 		app:multiSearchBarHint1="i am hint1"
+		app:multiSearchBarDrawable1="@drawable/ic_local_airport_black_24dp"
+		app:multiSearchBarDrawable2="@drawable/ic_brightness_1_black_24dp"
 		/>
 </LinearLayout>

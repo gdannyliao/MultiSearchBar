@@ -4,23 +4,24 @@ import android.animation.ObjectAnimator
 import android.app.Activity
 import android.content.Context
 import android.content.ContextWrapper
+import android.graphics.drawable.ColorDrawable
+import android.graphics.drawable.Drawable
 import android.graphics.drawable.TransitionDrawable
 import android.support.annotation.AttrRes
-import android.support.v7.widget.AppCompatButton
-import android.support.v7.widget.AppCompatEditText
-import android.support.v7.widget.AppCompatImageButton
-import android.support.v7.widget.AppCompatTextView
+import android.support.v7.widget.*
 import android.text.TextUtils
 import android.text.TextWatcher
 import android.util.AttributeSet
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.view.animation.AlphaAnimation
 import android.view.animation.Animation
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.FrameLayout
-import android.widget.Toast
+import android.widget.PopupWindow
 
 /**
  * Created by LiaoXingyu on 15/03/2017.
@@ -72,6 +73,11 @@ class MultiSearchBar : FrameLayout {
     private var midLine2: View? = null
     private var midLine3: View? = null
     private var title2: String? = null
+    private var searchDefaultDrawable: TransitionDrawable? = null
+
+    private var drawable1: Drawable? = null
+    private var drawable2: Drawable? = null
+    private var drawable3: Drawable? = null
 
     constructor(context: Context) : super(context) {
         init(context, null)
@@ -168,6 +174,8 @@ class MultiSearchBar : FrameLayout {
         layout = View.inflate(context, R.layout.multi_search_bar, this)
         leftButton = layout!!.findViewById(R.id.multiSearchBarButtonLeft) as AppCompatImageButton
         searchButton = layout!!.findViewById(R.id.multiSearchBarButtonSearch) as AppCompatImageButton
+        searchDefaultDrawable = searchButton!!.drawable as TransitionDrawable?
+
         cancelButton = layout!!.findViewById(R.id.multiSearchBarButtonCancel) as AppCompatButton
         titleText1 = layout!!.findViewById(R.id.multiSearchBarTextViewTitle1) as AppCompatTextView
         titleText2 = layout!!.findViewById(R.id.multiSearchBarTextViewTitle2) as AppCompatTextView
@@ -181,6 +189,8 @@ class MultiSearchBar : FrameLayout {
         setupViews(attrs)
     }
 
+    private var popupWindow: PopupWindow? = null
+
     private fun setupViews(attrs: AttributeSet?) {
         attrs?.let {
             parseXml(attrs)
@@ -188,7 +198,7 @@ class MultiSearchBar : FrameLayout {
         searchButton!!.setOnClickListener(View.OnClickListener { v ->
             if (mode == Mode.Input) {
                 if (type == Type.Popup) {
-                    Toast.makeText(v.context, "hehe", Toast.LENGTH_SHORT).show()
+                    popupWindow?.showAsDropDown(searchButton)
                 }
                 return@OnClickListener
             }
@@ -213,6 +223,22 @@ class MultiSearchBar : FrameLayout {
         searchEdit1!!.onFocusChangeListener = focusChangeListener
         searchEdit2!!.onFocusChangeListener = focusChangeListener
         searchEdit3!!.onFocusChangeListener = focusChangeListener
+
+        if (type == Type.Popup) {
+            val view = LayoutInflater.from(context).inflate(R.layout.multi_search_bar_popup, null)
+            if (drawable1 == null) {
+                view.findViewById(R.id.multiSearchBarDrawable1).visibility = View.GONE
+            } else {
+                val imageView1 = view.findViewById(R.id.multiSearchBarDrawable1) as AppCompatImageView
+                imageView1.setImageDrawable(drawable1)
+            }
+
+            val textView1 = view.findViewById(R.id.multiSearchBarSearchName1) as AppCompatTextView
+
+            popupWindow = PopupWindow(view, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+            popupWindow!!.isOutsideTouchable = true
+            popupWindow!!.setBackgroundDrawable(ColorDrawable(0x00000000))
+        }
     }
 
     private fun toInputMode(withAnimation: Boolean) {
@@ -255,6 +281,8 @@ class MultiSearchBar : FrameLayout {
         when (type) {
             MultiSearchBar.Type.Popup -> {
                 searchEdit1!!.hint = hint1
+                drawable1?.let { searchButton?.setImageDrawable(drawable1) }
+
                 midLine2!!.visibility = View.GONE
                 midLine3!!.visibility = View.GONE
                 searchEdit2!!.visibility = View.GONE
@@ -356,9 +384,9 @@ class MultiSearchBar : FrameLayout {
                 drawable.reverseTransition(100)
             }
             MultiSearchBar.Type.One, MultiSearchBar.Type.Popup -> {
+                searchButton!!.setImageDrawable(searchDefaultDrawable)
                 ObjectAnimator.ofFloat<View>(searchButton, View.TRANSLATION_X, 0f).start()
-                val drawable = searchButton!!.drawable as TransitionDrawable
-                drawable.reverseTransition(100)
+                searchDefaultDrawable?.reverseTransition(100)
             }
         }
         searchButton!!.visibility = View.VISIBLE
@@ -427,6 +455,11 @@ class MultiSearchBar : FrameLayout {
         hint3?.let {
             searchEdit3!!.hint = hint3
         }
+
+        drawable1 = typedArray.getDrawable(R.styleable.MultiSearchBar_multiSearchBarDrawable1)
+        drawable2 = typedArray.getDrawable(R.styleable.MultiSearchBar_multiSearchBarDrawable2)
+        drawable3 = typedArray.getDrawable(R.styleable.MultiSearchBar_multiSearchBarDrawable3)
+
         typedArray.recycle()
     }
 

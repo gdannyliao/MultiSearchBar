@@ -11,6 +11,12 @@
 			format="string"/>
 		<attr name="multiSearchBarHint3"
 			format="string"/>
+		<attr name="multiSearchBarDrawable1"
+			format="reference"/>
+		<attr name="multiSearchBarDrawable2"
+			format="reference"/>
+		<attr name="multiSearchBarDrawable3"
+			format="reference"/>
 		<attr name="multiSearchBarLeftSrc"
 			format="reference"/>
 		<attr name="multiSearchBarType"
