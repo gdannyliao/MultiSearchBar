@@ -21,6 +21,8 @@
 				value="1"/>
 			<enum value="2"
 				name="Three"/>
+			<enum value="3"
+				name="Popup"/>
 		</attr>
 	</declare-styleable>
 
