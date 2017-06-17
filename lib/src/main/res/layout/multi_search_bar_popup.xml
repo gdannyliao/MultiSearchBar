@@ -9,101 +9,121 @@
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		app:srcCompat="@drawable/multi_search_bar_ic_arrow"
-		android:layout_marginLeft="9dp"
+		android:layout_marginLeft="10dp"
 		/>
 	<android.support.constraint.ConstraintLayout
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		android:background="@drawable/multi_search_bar_shape_bg"
 		>
-
-		<android.support.v7.widget.AppCompatImageView
+		<android.support.constraint.ConstraintLayout
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
-			style="@style/MultiSearchBarPopupImage"
-			app:srcCompat="@color/multiSearchBarGold"
-			android:id="@+id/multiSearchBarPopupDrawable1"
-			app:layout_constraintLeft_toLeftOf="parent"
-			app:layout_constraintRight_toLeftOf="@+id/multiSearchBarPopupText1"
-			app:layout_constraintTop_toTopOf="parent"
-			app:layout_constraintBottom_toTopOf="@+id/multiSearchBarPopupDrawable2"
-			app:layout_constraintHorizontal_bias="0.0"
-			/>
-		<android.support.v7.widget.AppCompatTextView
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:id="@+id/multiSearchBarPopupText1"
-			style="@style/MultiSearchBarPopupTextViewStyle"
-			app:layout_constraintLeft_toRightOf="@id/multiSearchBarPopupDrawable1"
-			app:layout_constraintRight_toRightOf="parent"
-			app:layout_constraintBottom_toBottomOf="@+id/multiSearchBarPopupDrawable1"
-			android:text="line1"
-			/>
-		<View
-			android:layout_width="0dp"
-			android:layout_height="1px"
 			android:id="@+id/multiSearchBarPopupLine1"
-			android:layout_marginTop="@dimen/multiSearchBarMargin"
-			app:layout_constraintTop_toBottomOf="@id/multiSearchBarPopupDrawable1"
-			app:layout_constraintLeft_toLeftOf="parent"
-			app:layout_constraintRight_toRightOf="parent"
-			android:background="@color/grayE3"
-			/>
-		<android.support.v7.widget.AppCompatImageView
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			style="@style/MultiSearchBarPopupImage"
-			app:srcCompat="@color/multiSearchBarGold"
-			android:id="@+id/multiSearchBarPopupDrawable2"
-			app:layout_constraintLeft_toLeftOf="parent"
-			app:layout_constraintRight_toLeftOf="@+id/multiSearchBarPopupText2"
-			app:layout_constraintTop_toBottomOf="@id/multiSearchBarPopupDrawable1"
-			app:layout_constraintBottom_toTopOf="@+id/multiSearchBarPopupDrawable3"
-			app:layout_constraintHorizontal_bias="0.0"
-			/>
-		<android.support.v7.widget.AppCompatTextView
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:id="@+id/multiSearchBarPopupText2"
-			style="@style/MultiSearchBarPopupTextViewStyle"
-			app:layout_constraintLeft_toRightOf="@id/multiSearchBarPopupDrawable2"
-			app:layout_constraintRight_toRightOf="parent"
-			app:layout_constraintBottom_toBottomOf="@id/multiSearchBarPopupDrawable2"
-			android:text="line2"
-			/>
+			>
+			<android.support.v7.widget.AppCompatImageView
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				style="@style/MultiSearchBarPopupImage"
+				app:srcCompat="@color/multiSearchBarGold"
+				android:id="@+id/multiSearchBarPopupDrawable1"
+				app:layout_constraintLeft_toLeftOf="parent"
+				app:layout_constraintRight_toLeftOf="@+id/multiSearchBarPopupText1"
+				app:layout_constraintTop_toTopOf="parent"
+				app:layout_constraintBottom_toBottomOf="parent"
+				app:layout_constraintHorizontal_bias="0.0"
+				/>
+			<android.support.v7.widget.AppCompatTextView
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:id="@+id/multiSearchBarPopupText1"
+				style="@style/MultiSearchBarPopupTextViewStyle"
+				app:layout_constraintLeft_toRightOf="@id/multiSearchBarPopupDrawable1"
+				app:layout_constraintRight_toRightOf="parent"
+				app:layout_constraintBottom_toBottomOf="@+id/multiSearchBarPopupDrawable1"
+				android:text="line1"
+				/>
+		</android.support.constraint.ConstraintLayout>
 
-		<View
-			android:layout_width="0dp"
-			android:layout_height="1px"
+
+		<android.support.constraint.ConstraintLayout
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
 			android:id="@+id/multiSearchBarPopupLine2"
-			android:layout_marginTop="@dimen/multiSearchBarMargin"
-			app:layout_constraintTop_toBottomOf="@id/multiSearchBarPopupDrawable2"
-			app:layout_constraintLeft_toLeftOf="parent"
-			app:layout_constraintRight_toRightOf="parent"
-			android:background="@color/grayE3"
-			/>
-		<android.support.v7.widget.AppCompatImageView
+			app:layout_constraintTop_toBottomOf="@id/multiSearchBarPopupLine1"
+			>
+			<View
+				android:layout_width="0dp"
+				android:layout_height="1px"
+				android:id="@+id/multiSearchBarPopupDivider1"
+				app:layout_constraintLeft_toLeftOf="parent"
+				app:layout_constraintRight_toRightOf="parent"
+				android:background="@color/grayE3"
+				/>
+			<android.support.v7.widget.AppCompatImageView
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				style="@style/MultiSearchBarPopupImage"
+				app:srcCompat="@color/multiSearchBarGold"
+				android:id="@+id/multiSearchBarPopupDrawable2"
+				app:layout_constraintLeft_toLeftOf="parent"
+				app:layout_constraintRight_toLeftOf="@+id/multiSearchBarPopupText2"
+				app:layout_constraintTop_toBottomOf="@id/multiSearchBarPopupDivider1"
+				app:layout_constraintBottom_toBottomOf="parent"
+				app:layout_constraintHorizontal_bias="0.0"
+				/>
+			<android.support.v7.widget.AppCompatTextView
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:id="@+id/multiSearchBarPopupText2"
+				style="@style/MultiSearchBarPopupTextViewStyle"
+				app:layout_constraintLeft_toRightOf="@id/multiSearchBarPopupDrawable2"
+				app:layout_constraintRight_toRightOf="parent"
+				app:layout_constraintBottom_toBottomOf="@id/multiSearchBarPopupDrawable2"
+				android:text="line2"
+				/>
+
+		</android.support.constraint.ConstraintLayout>
+
+		<android.support.constraint.ConstraintLayout
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
-			app:srcCompat="@color/multiSearchBarGold"
-			style="@style/MultiSearchBarPopupImage"
-			android:id="@+id/multiSearchBarPopupDrawable3"
-			app:layout_constraintLeft_toLeftOf="parent"
-			app:layout_constraintRight_toLeftOf="@+id/multiSearchBarPopupText3"
-			app:layout_constraintTop_toBottomOf="@id/multiSearchBarPopupDrawable2"
-			app:layout_constraintBottom_toBottomOf="parent"
-			app:layout_constraintHorizontal_bias="0.0"
-			/>
-		<android.support.v7.widget.AppCompatTextView
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:id="@+id/multiSearchBarPopupText3"
-			style="@style/MultiSearchBarPopupTextViewStyle"
-			app:layout_constraintLeft_toRightOf="@id/multiSearchBarPopupDrawable3"
-			app:layout_constraintRight_toRightOf="parent"
-			app:layout_constraintBottom_toBottomOf="@id/multiSearchBarPopupDrawable3"
-			android:text="line3"
-			/>
+			android:id="@+id/multiSearchBarPopupLine3"
+			app:layout_constraintTop_toBottomOf="@id/multiSearchBarPopupLine2"
+			>
+			<View
+				android:layout_width="0dp"
+				android:layout_height="1px"
+				android:id="@+id/multiSearchBarPopupDivider2"
+				app:layout_constraintTop_toTopOf="parent"
+				app:layout_constraintLeft_toLeftOf="parent"
+				app:layout_constraintRight_toRightOf="parent"
+				android:background="@color/grayE3"
+				/>
+			<android.support.v7.widget.AppCompatImageView
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				app:srcCompat="@color/multiSearchBarGold"
+				style="@style/MultiSearchBarPopupImage"
+				android:id="@+id/multiSearchBarPopupDrawable3"
+				app:layout_constraintLeft_toLeftOf="parent"
+				app:layout_constraintRight_toLeftOf="@+id/multiSearchBarPopupText3"
+				app:layout_constraintTop_toBottomOf="@id/multiSearchBarPopupDivider2"
+				app:layout_constraintBottom_toBottomOf="parent"
+				app:layout_constraintHorizontal_bias="0.0"
+				/>
+			<android.support.v7.widget.AppCompatTextView
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:id="@+id/multiSearchBarPopupText3"
+				style="@style/MultiSearchBarPopupTextViewStyle"
+				app:layout_constraintLeft_toRightOf="@id/multiSearchBarPopupDrawable3"
+				app:layout_constraintRight_toRightOf="parent"
+				app:layout_constraintBottom_toBottomOf="@id/multiSearchBarPopupDrawable3"
+				android:text="line3"
+				/>
+		</android.support.constraint.ConstraintLayout>
+
 	</android.support.constraint.ConstraintLayout>
 
 </LinearLayout>

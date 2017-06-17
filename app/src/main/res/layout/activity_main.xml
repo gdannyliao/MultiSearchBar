@@ -41,6 +41,9 @@
 		app:multiSearchBarHint1="i am hint1"
 		app:multiSearchBarPopupDrawable1="@drawable/ic_local_airport_black_24dp"
 		app:multiSearchBarPopupDrawable2="@drawable/ic_brightness_1_black_24dp"
+		app:multiSearchBarPopupDrawable3="@drawable/ic_local_airport_black_24dp"
 		app:multiSearchBarPopupText1="hehe"
+		app:multiSearchBarPopupText2="diu"
+		app:multiSearchBarPopupText3="werwer"
 		/>
 </LinearLayout>

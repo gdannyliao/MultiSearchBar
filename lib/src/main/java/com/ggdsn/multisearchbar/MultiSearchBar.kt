@@ -44,6 +44,10 @@ class MultiSearchBar : FrameLayout {
         fun onNewMode(newMode: Mode)
     }
 
+    interface OnPopupItemClickListener {
+        fun onItemClick(item: Int)
+    }
+
     enum class Type {
         One, Two, Three, Popup
     }
@@ -170,6 +174,12 @@ class MultiSearchBar : FrameLayout {
         onModeChangedListener = listener
     }
 
+    private var onPopupItemClickListener: OnPopupItemClickListener? = null
+
+    fun setOnPopupItemClickListener(l: OnPopupItemClickListener) {
+        onPopupItemClickListener = l
+    }
+
     private fun init(context: Context, attrs: AttributeSet?) {
         layout = View.inflate(context, R.layout.multi_search_bar, this)
         leftButton = layout!!.findViewById(R.id.multiSearchBarButtonLeft) as AppCompatImageButton
@@ -225,41 +235,64 @@ class MultiSearchBar : FrameLayout {
         searchEdit3!!.onFocusChangeListener = focusChangeListener
 
         if (type == Type.Popup) {
+            fun onItemClick(line: Int) {
+                popupWindow?.dismiss()
+                onPopupItemClickListener?.onItemClick(line)
+            }
+
             val view = LayoutInflater.from(context).inflate(R.layout.multi_search_bar_popup, null)
-            if (popupDrawable1 == null) {
-                view.findViewById(R.id.multiSearchBarPopupDrawable1).visibility = View.GONE
+
+            if (popupText1.isNullOrEmpty()) {
+                view.findViewById(R.id.multiSearchBarPopupLine1).visibility = View.GONE
             } else {
-                val imageView1 = view.findViewById(R.id.multiSearchBarPopupDrawable1) as AppCompatImageView
-                imageView1.setImageDrawable(popupDrawable1)
+
+                if (popupDrawable1 == null) {
+                    view.findViewById(R.id.multiSearchBarPopupDrawable1).visibility = View.GONE
+                } else {
+                    val imageView1 = view.findViewById(R.id.multiSearchBarPopupDrawable1) as AppCompatImageView
+                    imageView1.setImageDrawable(popupDrawable1)
+                }
+
+                val textView1 = view.findViewById(R.id.multiSearchBarPopupText1) as AppCompatTextView
+                textView1.text = popupText1
+                view.findViewById(R.id.multiSearchBarPopupLine1).setOnClickListener { onItemClick(1) }
             }
 
-            val textView1 = view.findViewById(R.id.multiSearchBarPopupText1) as AppCompatTextView
-            textView1.text = popupText1
-
-            if (popupDrawable2 == null) {
-                view.findViewById(R.id.multiSearchBarPopupDrawable2).visibility = View.GONE
+            if (popupText2.isNullOrEmpty()) {
+                view.findViewById(R.id.multiSearchBarPopupLine2).visibility = View.GONE
             } else {
-                val imageView2 = view.findViewById(R.id.multiSearchBarPopupDrawable2) as AppCompatImageView
-                imageView2.setImageDrawable(popupDrawable2)
+                if (popupDrawable2 == null) {
+                    view.findViewById(R.id.multiSearchBarPopupDrawable2).visibility = View.GONE
+                } else {
+                    val imageView2 = view.findViewById(R.id.multiSearchBarPopupDrawable2) as AppCompatImageView
+                    imageView2.setImageDrawable(popupDrawable2)
+                }
+
+                val textView2 = view.findViewById(R.id.multiSearchBarPopupText2) as AppCompatTextView
+                textView2.text = popupText2
+                view.findViewById(R.id.multiSearchBarPopupLine2).setOnClickListener { onItemClick(2) }
             }
 
-            val textView2 = view.findViewById(R.id.multiSearchBarPopupText2) as AppCompatTextView
-            textView2.text = popupText2
-
-            if (popupDrawable3 == null) {
-                view.findViewById(R.id.multiSearchBarPopupDrawable3).visibility = View.GONE
+            if (popupText3.isNullOrEmpty()) {
+                view.findViewById(R.id.multiSearchBarPopupLine3).visibility = View.GONE
             } else {
-                val imageView3 = view.findViewById(R.id.multiSearchBarPopupDrawable2) as AppCompatImageView
-                imageView3.setImageDrawable(popupDrawable2)
+                if (popupDrawable3 == null) {
+                    view.findViewById(R.id.multiSearchBarPopupDrawable3).visibility = View.GONE
+                } else {
+                    val imageView3 = view.findViewById(R.id.multiSearchBarPopupDrawable2) as AppCompatImageView
+                    imageView3.setImageDrawable(popupDrawable2)
+                }
+                val textView3 = view.findViewById(R.id.multiSearchBarPopupText3) as AppCompatTextView
+                textView3.text = popupText3
+                view.findViewById(R.id.multiSearchBarPopupLine3).setOnClickListener { onItemClick(3) }
             }
-            val textView3 = view.findViewById(R.id.multiSearchBarPopupText3) as AppCompatTextView
-            textView3.text = popupText3
 
             popupWindow = PopupWindow(view, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
             popupWindow!!.isOutsideTouchable = true
             popupWindow!!.setBackgroundDrawable(ColorDrawable(0x00000000))
         }
     }
+
 
     private fun toInputMode(withAnimation: Boolean) {
         // TODO: 22/03/2017 添加动画开关
@@ -297,6 +330,11 @@ class MultiSearchBar : FrameLayout {
 
             }
         })
+
+        fun showKeyboard(editText: EditText) {
+            val inputMethodManager = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            inputMethodManager.showSoftInput(editText, InputMethodManager.SHOW_IMPLICIT)
+        }
 
         when (type) {
             MultiSearchBar.Type.Popup -> {
@@ -411,6 +449,10 @@ class MultiSearchBar : FrameLayout {
         }
         searchButton!!.visibility = View.VISIBLE
 
+        fun closeSoftKeyboard(focused: View) {
+            val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            imm.hideSoftInputFromWindow(focused.windowToken, 0)
+        }
         closeSoftKeyboard(layout!!)
 
         onModeChangedListener?.onNewMode(mode)
@@ -434,6 +476,13 @@ class MultiSearchBar : FrameLayout {
     private var popupText3: String? = null
 
     private fun parseXml(attrs: AttributeSet) {
+        fun toPixels(context: Context, dp: Float): Int {
+            val scale = context.resources.displayMetrics.density
+            // Convert the dps to pixels, based on density scale
+            //在转换时加上 0.5f，将该数字四舍五入到最接近的整数
+            return (dp * scale + 0.5f).toInt()
+        }
+
         val typedArray = context.obtainStyledAttributes(attrs, R.styleable.MultiSearchBar)
 
         type = Type.values()[typedArray.getInt(R.styleable.MultiSearchBar_multiSearchBarType, Type.One.ordinal)]
@@ -491,11 +540,6 @@ class MultiSearchBar : FrameLayout {
         typedArray.recycle()
     }
 
-    private fun showKeyboard(editText: EditText) {
-        val inputMethodManager = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-        inputMethodManager.showSoftInput(editText, InputMethodManager.SHOW_IMPLICIT)
-    }
-
     private val hostActivity: Activity?
         get() {
             var context = context
@@ -508,21 +552,7 @@ class MultiSearchBar : FrameLayout {
             return null
         }
 
-    private fun closeSoftKeyboard(focused: View) {
-        val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-        imm.hideSoftInputFromWindow(focused.windowToken, 0)
-    }
-
     companion object {
-
         private const val MAX_SINGLE_SEARCH_DP_WIDTH = 240f
-        private val TAG = "MultiSearchBar"
-
-        private fun toPixels(context: Context, dp: Float): Int {
-            val scale = context.resources.displayMetrics.density
-            // Convert the dps to pixels, based on density scale
-            //在转换时加上 0.5f，将该数字四舍五入到最接近的整数
-            return (dp * scale + 0.5f).toInt()
-        }
     }
 }
