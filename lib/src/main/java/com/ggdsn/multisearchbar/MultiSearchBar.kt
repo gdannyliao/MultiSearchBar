@@ -75,9 +75,9 @@ class MultiSearchBar : FrameLayout {
     private var title2: String? = null
     private var searchDefaultDrawable: TransitionDrawable? = null
 
-    private var drawable1: Drawable? = null
-    private var drawable2: Drawable? = null
-    private var drawable3: Drawable? = null
+    private var popupDrawable1: Drawable? = null
+    private var popupDrawable2: Drawable? = null
+    private var popupDrawable3: Drawable? = null
 
     constructor(context: Context) : super(context) {
         init(context, null)
@@ -226,14 +226,34 @@ class MultiSearchBar : FrameLayout {
 
         if (type == Type.Popup) {
             val view = LayoutInflater.from(context).inflate(R.layout.multi_search_bar_popup, null)
-            if (drawable1 == null) {
-                view.findViewById(R.id.multiSearchBarDrawable1).visibility = View.GONE
+            if (popupDrawable1 == null) {
+                view.findViewById(R.id.multiSearchBarPopupDrawable1).visibility = View.GONE
             } else {
-                val imageView1 = view.findViewById(R.id.multiSearchBarDrawable1) as AppCompatImageView
-                imageView1.setImageDrawable(drawable1)
+                val imageView1 = view.findViewById(R.id.multiSearchBarPopupDrawable1) as AppCompatImageView
+                imageView1.setImageDrawable(popupDrawable1)
             }
 
-            val textView1 = view.findViewById(R.id.multiSearchBarSearchName1) as AppCompatTextView
+            val textView1 = view.findViewById(R.id.multiSearchBarPopupText1) as AppCompatTextView
+            textView1.text = popupText1
+
+            if (popupDrawable2 == null) {
+                view.findViewById(R.id.multiSearchBarPopupDrawable2).visibility = View.GONE
+            } else {
+                val imageView2 = view.findViewById(R.id.multiSearchBarPopupDrawable2) as AppCompatImageView
+                imageView2.setImageDrawable(popupDrawable2)
+            }
+
+            val textView2 = view.findViewById(R.id.multiSearchBarPopupText2) as AppCompatTextView
+            textView2.text = popupText2
+
+            if (popupDrawable3 == null) {
+                view.findViewById(R.id.multiSearchBarPopupDrawable3).visibility = View.GONE
+            } else {
+                val imageView3 = view.findViewById(R.id.multiSearchBarPopupDrawable2) as AppCompatImageView
+                imageView3.setImageDrawable(popupDrawable2)
+            }
+            val textView3 = view.findViewById(R.id.multiSearchBarPopupText3) as AppCompatTextView
+            textView3.text = popupText3
 
             popupWindow = PopupWindow(view, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
             popupWindow!!.isOutsideTouchable = true
@@ -281,7 +301,7 @@ class MultiSearchBar : FrameLayout {
         when (type) {
             MultiSearchBar.Type.Popup -> {
                 searchEdit1!!.hint = hint1
-                drawable1?.let { searchButton?.setImageDrawable(drawable1) }
+                popupDrawable1?.let { searchButton?.setImageDrawable(popupDrawable1) }
 
                 midLine2!!.visibility = View.GONE
                 midLine3!!.visibility = View.GONE
@@ -409,6 +429,10 @@ class MultiSearchBar : FrameLayout {
         }
     }
 
+    private var popupText1: String? = null
+    private var popupText2: String? = null
+    private var popupText3: String? = null
+
     private fun parseXml(attrs: AttributeSet) {
         val typedArray = context.obtainStyledAttributes(attrs, R.styleable.MultiSearchBar)
 
@@ -456,9 +480,13 @@ class MultiSearchBar : FrameLayout {
             searchEdit3!!.hint = hint3
         }
 
-        drawable1 = typedArray.getDrawable(R.styleable.MultiSearchBar_multiSearchBarDrawable1)
-        drawable2 = typedArray.getDrawable(R.styleable.MultiSearchBar_multiSearchBarDrawable2)
-        drawable3 = typedArray.getDrawable(R.styleable.MultiSearchBar_multiSearchBarDrawable3)
+        popupDrawable1 = typedArray.getDrawable(R.styleable.MultiSearchBar_multiSearchBarPopupDrawable1)
+        popupDrawable2 = typedArray.getDrawable(R.styleable.MultiSearchBar_multiSearchBarPopupDrawable2)
+        popupDrawable3 = typedArray.getDrawable(R.styleable.MultiSearchBar_multiSearchBarPopupDrawable3)
+
+        popupText1 = typedArray.getString(R.styleable.MultiSearchBar_multiSearchBarPopupText1)
+        popupText2 = typedArray.getString(R.styleable.MultiSearchBar_multiSearchBarPopupText2)
+        popupText3 = typedArray.getString(R.styleable.MultiSearchBar_multiSearchBarPopupText3)
 
         typedArray.recycle()
     }
