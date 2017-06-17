@@ -4,6 +4,8 @@ import android.animation.ObjectAnimator
 import android.app.Activity
 import android.content.Context
 import android.content.ContextWrapper
+import android.graphics.Color
+import android.graphics.LightingColorFilter
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.TransitionDrawable
@@ -268,7 +270,7 @@ class MultiSearchBar : FrameLayout {
                     view.findViewById(R.id.multiSearchBarPopupDrawable1).visibility = View.GONE
                 } else {
                     val imageView1 = view.findViewById(R.id.multiSearchBarPopupDrawable1) as AppCompatImageView
-                    imageView1.setImageDrawable(popupDrawable1)
+                    imageView1.setImageDrawable(popupDrawable1Black)
                 }
 
                 val textView1 = view.findViewById(R.id.multiSearchBarPopupText1) as AppCompatTextView
@@ -283,7 +285,7 @@ class MultiSearchBar : FrameLayout {
                     view.findViewById(R.id.multiSearchBarPopupDrawable2).visibility = View.GONE
                 } else {
                     val imageView2 = view.findViewById(R.id.multiSearchBarPopupDrawable2) as AppCompatImageView
-                    imageView2.setImageDrawable(popupDrawable2)
+                    imageView2.setImageDrawable(popupDrawable2Black)
                 }
 
                 val textView2 = view.findViewById(R.id.multiSearchBarPopupText2) as AppCompatTextView
@@ -297,8 +299,8 @@ class MultiSearchBar : FrameLayout {
                 if (popupDrawable3 == null) {
                     view.findViewById(R.id.multiSearchBarPopupDrawable3).visibility = View.GONE
                 } else {
-                    val imageView3 = view.findViewById(R.id.multiSearchBarPopupDrawable2) as AppCompatImageView
-                    imageView3.setImageDrawable(popupDrawable2)
+                    val imageView3 = view.findViewById(R.id.multiSearchBarPopupDrawable3) as AppCompatImageView
+                    imageView3.setImageDrawable(popupDrawable3Black)
                 }
                 val textView3 = view.findViewById(R.id.multiSearchBarPopupText3) as AppCompatTextView
                 textView3.text = popupText3
@@ -499,6 +501,12 @@ class MultiSearchBar : FrameLayout {
     private var popupText2: String? = null
     private var popupText3: String? = null
 
+    private var popupDrawable1Black: Drawable? = null
+
+    private var popupDrawable2Black: Drawable? = null
+
+    private var popupDrawable3Black: Drawable? = null
+
     private fun parseXml(attrs: AttributeSet) {
         fun toPixels(context: Context, dp: Float): Int {
             val scale = context.resources.displayMetrics.density
@@ -553,9 +561,22 @@ class MultiSearchBar : FrameLayout {
             searchEdit3!!.hint = hint3
         }
 
+        val white = LightingColorFilter(Color.WHITE, Color.WHITE)
+        val black = LightingColorFilter(Color.BLACK, Color.BLACK)
         popupDrawable1 = typedArray.getDrawable(R.styleable.MultiSearchBar_multiSearchBarPopupDrawable1)
+        popupDrawable1?.colorFilter = white
+        popupDrawable1Black = popupDrawable1?.constantState?.newDrawable()?.mutate()
+        popupDrawable1Black?.colorFilter = black
+
         popupDrawable2 = typedArray.getDrawable(R.styleable.MultiSearchBar_multiSearchBarPopupDrawable2)
+        popupDrawable2?.colorFilter = white
+        popupDrawable2Black = popupDrawable2?.constantState?.newDrawable()?.mutate()
+        popupDrawable2Black?.colorFilter = black
+
         popupDrawable3 = typedArray.getDrawable(R.styleable.MultiSearchBar_multiSearchBarPopupDrawable3)
+        popupDrawable3?.colorFilter = white
+        popupDrawable3Black = popupDrawable3?.constantState?.newDrawable()?.mutate()
+        popupDrawable3Black?.colorFilter = black
 
         popupText1 = typedArray.getString(R.styleable.MultiSearchBar_multiSearchBarPopupText1)
         popupText2 = typedArray.getString(R.styleable.MultiSearchBar_multiSearchBarPopupText2)
