@@ -83,6 +83,10 @@ class MultiSearchBar : FrameLayout {
     private var popupDrawable2: Drawable? = null
     private var popupDrawable3: Drawable? = null
 
+    private var downArrow: AppCompatImageView? = null
+    private var popupWindow: PopupWindow? = null
+    private var lastChosePopupItem: Int = 1
+
     constructor(context: Context) : super(context) {
         init(context, null)
     }
@@ -183,6 +187,7 @@ class MultiSearchBar : FrameLayout {
     private fun init(context: Context, attrs: AttributeSet?) {
         layout = View.inflate(context, R.layout.multi_search_bar, this)
         leftButton = layout!!.findViewById(R.id.multiSearchBarButtonLeft) as AppCompatImageButton
+        downArrow = layout!!.findViewById(R.id.multiSearchBarDownArrow) as AppCompatImageView
         searchButton = layout!!.findViewById(R.id.multiSearchBarButtonSearch) as AppCompatImageButton
         searchDefaultDrawable = searchButton!!.drawable as TransitionDrawable?
 
@@ -198,8 +203,6 @@ class MultiSearchBar : FrameLayout {
         underLine = layout!!.findViewById(R.id.multiSearchBarLine)
         setupViews(attrs)
     }
-
-    private var popupWindow: PopupWindow? = null
 
     private fun setupViews(attrs: AttributeSet?) {
         attrs?.let {
@@ -236,6 +239,21 @@ class MultiSearchBar : FrameLayout {
 
         if (type == Type.Popup) {
             fun onItemClick(line: Int) {
+                lastChosePopupItem = line
+                when (line) {
+                    1 -> {
+                        searchEdit1?.hint = hint1
+                        searchButton?.setImageDrawable(popupDrawable1)
+                    }
+                    2 -> {
+                        searchEdit1?.hint = hint2
+                        searchButton?.setImageDrawable(popupDrawable2)
+                    }
+                    3 -> {
+                        searchEdit1?.hint = hint3
+                        searchButton?.setImageDrawable(popupDrawable3)
+                    }
+                }
                 popupWindow?.dismiss()
                 onPopupItemClickListener?.onItemClick(line)
             }
@@ -308,7 +326,7 @@ class MultiSearchBar : FrameLayout {
         titleText2!!.visibility = View.GONE
         underLine!!.visibility = View.VISIBLE
 
-        ObjectAnimator.ofFloat(searchButton, View.TRANSLATION_X, -searchButton!!.x).start()
+        ObjectAnimator.ofFloat(searchButton, View.TRANSLATION_X, searchButton!!.paddingLeft - searchButton!!.x).start()
         val drawable = searchButton!!.drawable as TransitionDrawable
         drawable.startTransition(100)
 
@@ -338,8 +356,13 @@ class MultiSearchBar : FrameLayout {
 
         when (type) {
             MultiSearchBar.Type.Popup -> {
-                searchEdit1!!.hint = hint1
                 popupDrawable1?.let { searchButton?.setImageDrawable(popupDrawable1) }
+                when (lastChosePopupItem) {
+                    1 -> searchButton?.setImageDrawable(popupDrawable1)
+                    2 -> searchButton?.setImageDrawable(popupDrawable2)
+                    3 -> searchButton?.setImageDrawable(popupDrawable3)
+                }
+                downArrow?.visibility = View.VISIBLE
 
                 midLine2!!.visibility = View.GONE
                 midLine3!!.visibility = View.GONE
@@ -419,6 +442,7 @@ class MultiSearchBar : FrameLayout {
         permitFocus = false
 
         leftButton!!.visibility = View.VISIBLE
+        downArrow?.visibility = View.GONE
         underLine!!.visibility = View.GONE
         cancelButton!!.visibility = View.INVISIBLE
         titleText1!!.visibility = View.VISIBLE

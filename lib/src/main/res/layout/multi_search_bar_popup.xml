@@ -9,7 +9,7 @@
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		app:srcCompat="@drawable/multi_search_bar_ic_arrow"
-		android:layout_marginLeft="10dp"
+		android:layout_marginLeft="18dp"
 		/>
 	<android.support.constraint.ConstraintLayout
 		android:layout_width="wrap_content"
