@@ -31,9 +31,9 @@ import android.widget.PopupWindow
 
 class MultiSearchBar : FrameLayout {
     private var onModeChangedListener: OnModeChangedListener? = null
-    private var onFocusChangeListener1: View.OnFocusChangeListener? = null
-    private var onFocusChangeListener2: View.OnFocusChangeListener? = null
-    private var onFocusChangeListener3: View.OnFocusChangeListener? = null
+    private var onFocusChangeListener1: OnFocusChangeListener? = null
+    private var onFocusChangeListener2: OnFocusChangeListener? = null
+    private var onFocusChangeListener3: OnFocusChangeListener? = null
     /**
      * 由于更改view的可见性会影响focus，所以当切换mode时会有好多focus change触发，用这个标记来适当屏蔽一些focus change事件
      */
@@ -62,7 +62,7 @@ class MultiSearchBar : FrameLayout {
         private set
     var mode = Mode.Normal
         private set
-    private var cancelButtonOnClickListener: View.OnClickListener? = null
+    private var cancelButtonOnClickListener: OnClickListener? = null
 
     private var layout: View? = null
     private var leftButton: AppCompatImageButton? = null
@@ -73,7 +73,7 @@ class MultiSearchBar : FrameLayout {
     private var searchEdit2: AppCompatEditText? = null
     private var searchEdit3: AppCompatEditText? = null
     private var underLine: View? = null
-    private var leftButtonOnClick: View.OnClickListener? = null
+    private var leftButtonOnClick: OnClickListener? = null
     private var titleText2: AppCompatTextView? = null
     private var midLine: View? = null
     private var midLine2: View? = null
@@ -101,11 +101,11 @@ class MultiSearchBar : FrameLayout {
         init(context, attrs)
     }
 
-    fun setLeftButtonOnClickListener(leftButtonOnClick: View.OnClickListener) {
+    fun setLeftButtonOnClickListener(leftButtonOnClick: OnClickListener) {
         this.leftButtonOnClick = leftButtonOnClick
     }
 
-    fun setCancelButtonOnClickListener(cancelButtonOnClickListener: View.OnClickListener) {
+    fun setCancelButtonOnClickListener(cancelButtonOnClickListener: OnClickListener) {
         this.cancelButtonOnClickListener = cancelButtonOnClickListener
     }
 
@@ -133,15 +133,15 @@ class MultiSearchBar : FrameLayout {
         searchEdit3!!.removeTextChangedListener(watcher)
     }
 
-    fun setOnFocusChangeListener1(l: View.OnFocusChangeListener) {
+    fun setOnFocusChangeListener1(l: OnFocusChangeListener) {
         onFocusChangeListener1 = l
     }
 
-    fun setOnFocusChangeListener2(l: View.OnFocusChangeListener) {
+    fun setOnFocusChangeListener2(l: OnFocusChangeListener) {
         onFocusChangeListener2 = l
     }
 
-    fun setOnFocusChangeListener3(l: View.OnFocusChangeListener) {
+    fun setOnFocusChangeListener3(l: OnFocusChangeListener) {
         onFocusChangeListener3 = l
     }
 
@@ -171,8 +171,8 @@ class MultiSearchBar : FrameLayout {
         }
 
         when (newMode) {
-            MultiSearchBar.Mode.Normal -> toNormalMode(true)
-            MultiSearchBar.Mode.Input -> toInputMode(true)
+            Mode.Normal -> toNormalMode(withAnimation)
+            Mode.Input -> toInputMode(withAnimation)
         }
     }
 
@@ -241,21 +241,7 @@ class MultiSearchBar : FrameLayout {
 
         if (type == Type.Popup) {
             fun onItemClick(line: Int) {
-                lastChosePopupItem = line
-                when (line) {
-                    0 -> {
-                        searchEdit1?.hint = hint1
-                        searchButton?.setImageDrawable(popupDrawable1)
-                    }
-                    1 -> {
-                        searchEdit1?.hint = hint2
-                        searchButton?.setImageDrawable(popupDrawable2)
-                    }
-                    2 -> {
-                        searchEdit1?.hint = hint3
-                        searchButton?.setImageDrawable(popupDrawable3)
-                    }
-                }
+                setPopupItem(line)
                 popupWindow?.dismiss()
                 onPopupItemClickListener?.onItemClick(line)
             }
@@ -313,8 +299,32 @@ class MultiSearchBar : FrameLayout {
         }
     }
 
+    /**
+     * 可切换当前选择的popup item，非popup模式无效
+     */
+    fun setPopupItem(item: Int) {
+        if (type != Type.Popup) {
+            return
+        }
 
-    private fun toInputMode(withAnimation: Boolean) {
+        lastChosePopupItem = item
+        when (item) {
+            0 -> {
+                searchEdit1?.hint = hint1
+                searchButton?.setImageDrawable(popupDrawable1)
+            }
+            1 -> {
+                searchEdit1?.hint = hint2
+                searchButton?.setImageDrawable(popupDrawable2)
+            }
+            2 -> {
+                searchEdit1?.hint = hint3
+                searchButton?.setImageDrawable(popupDrawable3)
+            }
+        }
+    }
+
+    private fun toInputMode(withAnimation: Boolean = true) {
         // TODO: 22/03/2017 添加动画开关
         if (mode == Mode.Input) {
             return
@@ -357,8 +367,7 @@ class MultiSearchBar : FrameLayout {
         }
 
         when (type) {
-            MultiSearchBar.Type.Popup -> {
-                popupDrawable1?.let { searchButton?.setImageDrawable(popupDrawable1) }
+            Type.Popup -> {
                 when (lastChosePopupItem) {
                     0 -> searchButton?.setImageDrawable(popupDrawable1)
                     1 -> searchButton?.setImageDrawable(popupDrawable2)
@@ -378,7 +387,7 @@ class MultiSearchBar : FrameLayout {
                 searchEdit1!!.requestFocus()
                 showKeyboard(searchEdit1!!)
             }
-            MultiSearchBar.Type.One -> {
+            Type.One -> {
                 midLine2!!.visibility = View.GONE
                 midLine3!!.visibility = View.GONE
                 searchEdit2!!.visibility = View.GONE
@@ -389,7 +398,7 @@ class MultiSearchBar : FrameLayout {
                 searchEdit1!!.requestFocus()
                 showKeyboard(searchEdit1!!)
             }
-            MultiSearchBar.Type.Two -> {
+            Type.Two -> {
                 searchButton!!.startAnimation(searchBtnAnim)
                 leftButton!!.visibility = View.GONE
 
@@ -409,7 +418,7 @@ class MultiSearchBar : FrameLayout {
                 searchEdit1!!.requestFocus()
                 showKeyboard(searchEdit1!!)
             }
-            MultiSearchBar.Type.Three -> {
+            Type.Three -> {
                 searchButton!!.startAnimation(searchBtnAnim)
                 leftButton!!.visibility = View.GONE
 
@@ -433,7 +442,7 @@ class MultiSearchBar : FrameLayout {
         onModeChangedListener?.onNewMode(mode)
     }
 
-    private fun toNormalMode(withAnimation: Boolean) {
+    private fun toNormalMode(withAnimation: Boolean = true) {
         if (mode == Mode.Normal) {
             return
         }
@@ -459,7 +468,7 @@ class MultiSearchBar : FrameLayout {
         midLine3!!.visibility = View.GONE
 
         when (type) {
-            MultiSearchBar.Type.Two, MultiSearchBar.Type.Three -> {
+            Type.Two, Type.Three -> {
                 val searchBtnAnim = AlphaAnimation(0f, 1f)
                 searchBtnAnim.duration = 300
                 searchButton!!.animation = searchBtnAnim
@@ -467,7 +476,7 @@ class MultiSearchBar : FrameLayout {
                 val drawable = searchButton!!.drawable as TransitionDrawable
                 drawable.reverseTransition(100)
             }
-            MultiSearchBar.Type.One, MultiSearchBar.Type.Popup -> {
+            Type.One, Type.Popup -> {
                 searchButton!!.setImageDrawable(searchDefaultDrawable)
                 ObjectAnimator.ofFloat<View>(searchButton, View.TRANSLATION_X, 0f).start()
                 searchDefaultDrawable?.reverseTransition(100)
@@ -484,7 +493,7 @@ class MultiSearchBar : FrameLayout {
         onModeChangedListener?.onNewMode(mode)
     }
 
-    private inner class FocusChangeListener : View.OnFocusChangeListener {
+    private inner class FocusChangeListener : OnFocusChangeListener {
 
         override fun onFocusChange(v: View, hasFocus: Boolean) {
             if (permitFocus) {
@@ -542,8 +551,8 @@ class MultiSearchBar : FrameLayout {
 
         val maxWidth = toPixels(context, MAX_SINGLE_SEARCH_DP_WIDTH)
         when (type) {
-            MultiSearchBar.Type.One, MultiSearchBar.Type.Popup -> searchEdit1!!.maxWidth = maxWidth
-            MultiSearchBar.Type.Two -> {
+            Type.One, Type.Popup -> searchEdit1!!.maxWidth = maxWidth
+            Type.Two -> {
                 searchEdit1!!.maxWidth = maxWidth / 2 - 2
                 searchEdit2!!.maxWidth = maxWidth / 2 - 2
                 searchEdit2!!.imeOptions = EditorInfo.IME_ACTION_DONE
