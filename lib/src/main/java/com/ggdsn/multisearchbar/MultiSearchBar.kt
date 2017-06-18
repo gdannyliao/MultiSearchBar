@@ -87,7 +87,7 @@ class MultiSearchBar : FrameLayout {
 
     private var downArrow: AppCompatImageView? = null
     private var popupWindow: PopupWindow? = null
-    private var lastChosePopupItem: Int = 1
+    private var lastChosePopupItem: Int = 0
 
     constructor(context: Context) : super(context) {
         init(context, null)
@@ -243,15 +243,15 @@ class MultiSearchBar : FrameLayout {
             fun onItemClick(line: Int) {
                 lastChosePopupItem = line
                 when (line) {
-                    1 -> {
+                    0 -> {
                         searchEdit1?.hint = hint1
                         searchButton?.setImageDrawable(popupDrawable1)
                     }
-                    2 -> {
+                    1 -> {
                         searchEdit1?.hint = hint2
                         searchButton?.setImageDrawable(popupDrawable2)
                     }
-                    3 -> {
+                    2 -> {
                         searchEdit1?.hint = hint3
                         searchButton?.setImageDrawable(popupDrawable3)
                     }
@@ -275,7 +275,7 @@ class MultiSearchBar : FrameLayout {
 
                 val textView1 = view.findViewById(R.id.multiSearchBarPopupText1) as AppCompatTextView
                 textView1.text = popupText1
-                view.findViewById(R.id.multiSearchBarPopupLine1).setOnClickListener { onItemClick(1) }
+                view.findViewById(R.id.multiSearchBarPopupLine1).setOnClickListener { onItemClick(0) }
             }
 
             if (popupText2.isNullOrEmpty()) {
@@ -290,7 +290,7 @@ class MultiSearchBar : FrameLayout {
 
                 val textView2 = view.findViewById(R.id.multiSearchBarPopupText2) as AppCompatTextView
                 textView2.text = popupText2
-                view.findViewById(R.id.multiSearchBarPopupLine2).setOnClickListener { onItemClick(2) }
+                view.findViewById(R.id.multiSearchBarPopupLine2).setOnClickListener { onItemClick(1) }
             }
 
             if (popupText3.isNullOrEmpty()) {
@@ -304,7 +304,7 @@ class MultiSearchBar : FrameLayout {
                 }
                 val textView3 = view.findViewById(R.id.multiSearchBarPopupText3) as AppCompatTextView
                 textView3.text = popupText3
-                view.findViewById(R.id.multiSearchBarPopupLine3).setOnClickListener { onItemClick(3) }
+                view.findViewById(R.id.multiSearchBarPopupLine3).setOnClickListener { onItemClick(2) }
             }
 
             popupWindow = PopupWindow(view, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
@@ -360,9 +360,9 @@ class MultiSearchBar : FrameLayout {
             MultiSearchBar.Type.Popup -> {
                 popupDrawable1?.let { searchButton?.setImageDrawable(popupDrawable1) }
                 when (lastChosePopupItem) {
-                    1 -> searchButton?.setImageDrawable(popupDrawable1)
-                    2 -> searchButton?.setImageDrawable(popupDrawable2)
-                    3 -> searchButton?.setImageDrawable(popupDrawable3)
+                    0 -> searchButton?.setImageDrawable(popupDrawable1)
+                    1 -> searchButton?.setImageDrawable(popupDrawable2)
+                    2 -> searchButton?.setImageDrawable(popupDrawable3)
                 }
                 downArrow?.visibility = View.VISIBLE
 
