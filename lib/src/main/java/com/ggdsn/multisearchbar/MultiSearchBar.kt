@@ -9,7 +9,6 @@ import android.graphics.LightingColorFilter
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.TransitionDrawable
-import android.support.annotation.AttrRes
 import android.support.v7.widget.*
 import android.text.TextUtils
 import android.text.TextWatcher
@@ -29,7 +28,9 @@ import android.widget.PopupWindow
  * Created by LiaoXingyu on 15/03/2017.
  */
 
-class MultiSearchBar : FrameLayout {
+class MultiSearchBar @JvmOverloads constructor(
+        context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
+) : FrameLayout(context, attrs, defStyleAttr) {
     private var onModeChangedListener: OnModeChangedListener? = null
     private var onFocusChangeListener1: OnFocusChangeListener? = null
     private var onFocusChangeListener2: OnFocusChangeListener? = null
@@ -64,42 +65,30 @@ class MultiSearchBar : FrameLayout {
         private set
     private var cancelButtonOnClickListener: OnClickListener? = null
 
-    private var layout: View? = null
-    private var leftButton: AppCompatImageButton? = null
-    private var searchButton: AppCompatImageButton? = null
-    private var cancelButton: AppCompatButton? = null
-    private var titleText1: AppCompatTextView? = null
-    private var searchEdit1: AppCompatEditText? = null
-    private var searchEdit2: AppCompatEditText? = null
-    private var searchEdit3: AppCompatEditText? = null
-    private var underLine: View? = null
-    private var leftButtonOnClick: OnClickListener? = null
-    private var titleText2: AppCompatTextView? = null
-    private var midLine: View? = null
-    private var midLine2: View? = null
-    private var midLine3: View? = null
-    private var title2: String? = null
-    private var searchDefaultDrawable: TransitionDrawable? = null
+    private val layout = View.inflate(context, R.layout.multi_search_bar, this)
+    private val leftButton = layout.findViewById(R.id.multiSearchBarButtonLeft) as AppCompatImageButton
+    private val searchButton = layout.findViewById(R.id.multiSearchBarButtonSearch) as AppCompatImageButton
+    private val cancelButton = layout.findViewById(R.id.multiSearchBarButtonCancel) as AppCompatButton
+    private val titleText1 = layout.findViewById(R.id.multiSearchBarTextViewTitle1) as AppCompatTextView
+    private val titleText2 = layout.findViewById(R.id.multiSearchBarTextViewTitle2) as AppCompatTextView
+    private val searchEdit1 = layout.findViewById(R.id.multiSearchBarEditTextSearch1) as AppCompatEditText
+    private val searchEdit2 = layout.findViewById(R.id.multiSearchBarEditTextSearch2) as AppCompatEditText
+    private val searchEdit3 = layout.findViewById(R.id.multiSearchBarEditTextSearch3) as AppCompatEditText
+    private val underLine = layout.findViewById(R.id.multiSearchBarLine)
+    private val midLine = layout.findViewById(R.id.multiSearchBarMidLine)
+    private val midLine2 = layout.findViewById(R.id.multiSearchBarMidLine2)
+    private val midLine3 = layout.findViewById(R.id.multiSearchBarMidLine3)
+    private val searchDefaultDrawable = searchButton.drawable as TransitionDrawable
 
+    private var title2: String? = null
     private var popupDrawable1: Drawable? = null
     private var popupDrawable2: Drawable? = null
     private var popupDrawable3: Drawable? = null
+    private val downArrow = layout.findViewById(R.id.multiSearchBarDownArrow) as AppCompatImageView
 
-    private var downArrow: AppCompatImageView? = null
     private var popupWindow: PopupWindow? = null
     private var lastChosePopupItem: Int = 0
-
-    constructor(context: Context) : super(context) {
-        init(context, null)
-    }
-
-    constructor(context: Context, attrs: AttributeSet?) : super(context, attrs) {
-        init(context, attrs)
-    }
-
-    constructor(context: Context, attrs: AttributeSet?, @AttrRes defStyleAttr: Int) : super(context, attrs, defStyleAttr) {
-        init(context, attrs)
-    }
+    private var leftButtonOnClick: OnClickListener? = null
 
     fun setLeftButtonOnClickListener(leftButtonOnClick: OnClickListener) {
         this.leftButtonOnClick = leftButtonOnClick
@@ -110,27 +99,27 @@ class MultiSearchBar : FrameLayout {
     }
 
     fun addTextChangedListener1(watcher: TextWatcher) {
-        searchEdit1!!.addTextChangedListener(watcher)
+        searchEdit1.addTextChangedListener(watcher)
     }
 
     fun removeTextChangedListener1(watcher: TextWatcher) {
-        searchEdit1!!.removeTextChangedListener(watcher)
+        searchEdit1.removeTextChangedListener(watcher)
     }
 
     fun addTextChangedListener2(watcher: TextWatcher) {
-        searchEdit2!!.addTextChangedListener(watcher)
+        searchEdit2.addTextChangedListener(watcher)
     }
 
     fun removeTextChangedListener2(watcher: TextWatcher) {
-        searchEdit2!!.removeTextChangedListener(watcher)
+        searchEdit2.removeTextChangedListener(watcher)
     }
 
     fun addTextChangedListener3(watcher: TextWatcher) {
-        searchEdit3!!.addTextChangedListener(watcher)
+        searchEdit3.addTextChangedListener(watcher)
     }
 
     fun removeTextChangedListener3(watcher: TextWatcher) {
-        searchEdit3!!.removeTextChangedListener(watcher)
+        searchEdit3.removeTextChangedListener(watcher)
     }
 
     fun setOnFocusChangeListener1(l: OnFocusChangeListener) {
@@ -149,7 +138,7 @@ class MultiSearchBar : FrameLayout {
         if (title == null) {
             return
         }
-        titleText1!!.text = title
+        titleText1.text = title
     }
 
     fun setTitle2(title: String?) {
@@ -157,12 +146,12 @@ class MultiSearchBar : FrameLayout {
             return
         }
         title2 = title
-        titleText2!!.text = title2
+        titleText2.text = title2
         if (mode == Mode.Input) {
             return
         }
-        midLine!!.visibility = View.VISIBLE
-        titleText2!!.visibility = View.VISIBLE
+        midLine.visibility = View.VISIBLE
+        titleText2.visibility = View.VISIBLE
     }
 
     @JvmOverloads fun switchMode(newMode: Mode, withAnimation: Boolean = true) {
@@ -186,23 +175,7 @@ class MultiSearchBar : FrameLayout {
         onPopupItemClickListener = l
     }
 
-    private fun init(context: Context, attrs: AttributeSet?) {
-        layout = View.inflate(context, R.layout.multi_search_bar, this)
-        leftButton = layout!!.findViewById(R.id.multiSearchBarButtonLeft) as AppCompatImageButton
-        downArrow = layout!!.findViewById(R.id.multiSearchBarDownArrow) as AppCompatImageView
-        searchButton = layout!!.findViewById(R.id.multiSearchBarButtonSearch) as AppCompatImageButton
-        searchDefaultDrawable = searchButton!!.drawable as TransitionDrawable?
-
-        cancelButton = layout!!.findViewById(R.id.multiSearchBarButtonCancel) as AppCompatButton
-        titleText1 = layout!!.findViewById(R.id.multiSearchBarTextViewTitle1) as AppCompatTextView
-        titleText2 = layout!!.findViewById(R.id.multiSearchBarTextViewTitle2) as AppCompatTextView
-        midLine = layout!!.findViewById(R.id.multiSearchBarMidLine)
-        searchEdit1 = layout!!.findViewById(R.id.multiSearchBarEditTextSearch1) as AppCompatEditText
-        searchEdit2 = layout!!.findViewById(R.id.multiSearchBarEditTextSearch2) as AppCompatEditText
-        searchEdit3 = layout!!.findViewById(R.id.multiSearchBarEditTextSearch3) as AppCompatEditText
-        midLine2 = layout!!.findViewById(R.id.multiSearchBarMidLine2)
-        midLine3 = layout!!.findViewById(R.id.multiSearchBarMidLine3)
-        underLine = layout!!.findViewById(R.id.multiSearchBarLine)
+    init {
         setupViews(attrs)
     }
 
@@ -210,7 +183,7 @@ class MultiSearchBar : FrameLayout {
         attrs?.let {
             parseXml(attrs)
         }
-        searchButton!!.setOnClickListener(View.OnClickListener { v ->
+        searchButton.setOnClickListener(View.OnClickListener { v ->
             if (mode == Mode.Input) {
                 if (type == Type.Popup) {
                     popupWindow?.showAsDropDown(searchButton)
@@ -220,12 +193,12 @@ class MultiSearchBar : FrameLayout {
             toInputMode(true)
         })
 
-        cancelButton!!.setOnClickListener { v ->
+        cancelButton.setOnClickListener { v ->
             cancelButtonOnClickListener?.onClick(v)
             toNormalMode(true)
         }
 
-        leftButton!!.setOnClickListener { v ->
+        leftButton.setOnClickListener { v ->
             if (leftButtonOnClick == null) {
                 val activity = hostActivity
                 activity?.onBackPressed()
@@ -235,9 +208,9 @@ class MultiSearchBar : FrameLayout {
         }
 
         val focusChangeListener = FocusChangeListener()
-        searchEdit1!!.onFocusChangeListener = focusChangeListener
-        searchEdit2!!.onFocusChangeListener = focusChangeListener
-        searchEdit3!!.onFocusChangeListener = focusChangeListener
+        searchEdit1.onFocusChangeListener = focusChangeListener
+        searchEdit2.onFocusChangeListener = focusChangeListener
+        searchEdit3.onFocusChangeListener = focusChangeListener
 
         if (type == Type.Popup) {
             fun onItemClick(line: Int) {
@@ -310,18 +283,25 @@ class MultiSearchBar : FrameLayout {
         lastChosePopupItem = item
         when (item) {
             0 -> {
-                searchEdit1?.hint = hint1
-                searchButton?.setImageDrawable(popupDrawable1)
+                searchEdit1.hint = hint1
+                if (mode == Mode.Input)
+                    searchButton.setImageDrawable(popupDrawable1)
             }
             1 -> {
-                searchEdit1?.hint = hint2
-                searchButton?.setImageDrawable(popupDrawable2)
+                searchEdit1.hint = hint2
+                if (mode == Mode.Input)
+                    searchButton.setImageDrawable(popupDrawable2)
             }
             2 -> {
-                searchEdit1?.hint = hint3
-                searchButton?.setImageDrawable(popupDrawable3)
+                searchEdit1.hint = hint3
+                if (mode == Mode.Input)
+                    searchButton.setImageDrawable(popupDrawable3)
             }
         }
+    }
+
+    fun getPopupItem(): Int {
+        return lastChosePopupItem
     }
 
     private fun toInputMode(withAnimation: Boolean = true) {
@@ -331,15 +311,15 @@ class MultiSearchBar : FrameLayout {
         }
 
         mode = Mode.Input
-        leftButton!!.visibility = View.INVISIBLE
-        cancelButton!!.visibility = View.VISIBLE
-        titleText1!!.visibility = View.INVISIBLE
-        midLine!!.visibility = View.GONE
-        titleText2!!.visibility = View.GONE
-        underLine!!.visibility = View.VISIBLE
+        leftButton.visibility = View.INVISIBLE
+        cancelButton.visibility = View.VISIBLE
+        titleText1.visibility = View.INVISIBLE
+        midLine.visibility = View.GONE
+        titleText2.visibility = View.GONE
+        underLine.visibility = View.VISIBLE
 
-        ObjectAnimator.ofFloat(searchButton, View.TRANSLATION_X, searchButton!!.paddingLeft - searchButton!!.x).start()
-        val drawable = searchButton!!.drawable as TransitionDrawable
+        ObjectAnimator.ofFloat(searchButton, View.TRANSLATION_X, searchButton.paddingLeft - searchButton.x).start()
+        val drawable = searchButton.drawable as TransitionDrawable
         drawable.startTransition(100)
 
         val searchEditAnim = AlphaAnimation(0f, 1f)
@@ -353,7 +333,7 @@ class MultiSearchBar : FrameLayout {
             }
 
             override fun onAnimationEnd(animation: Animation) {
-                searchButton?.visibility = View.GONE
+                searchButton.visibility = View.GONE
             }
 
             override fun onAnimationRepeat(animation: Animation) {
@@ -369,74 +349,74 @@ class MultiSearchBar : FrameLayout {
         when (type) {
             Type.Popup -> {
                 when (lastChosePopupItem) {
-                    0 -> searchButton?.setImageDrawable(popupDrawable1)
-                    1 -> searchButton?.setImageDrawable(popupDrawable2)
-                    2 -> searchButton?.setImageDrawable(popupDrawable3)
+                    0 -> searchButton.setImageDrawable(popupDrawable1)
+                    1 -> searchButton.setImageDrawable(popupDrawable2)
+                    2 -> searchButton.setImageDrawable(popupDrawable3)
                 }
-                downArrow?.visibility = View.VISIBLE
+                downArrow.visibility = View.VISIBLE
 
-                midLine2!!.visibility = View.GONE
-                midLine3!!.visibility = View.GONE
-                searchEdit2!!.visibility = View.GONE
-                searchEdit3!!.visibility = View.GONE
+                midLine2.visibility = View.GONE
+                midLine3.visibility = View.GONE
+                searchEdit2.visibility = View.GONE
+                searchEdit3.visibility = View.GONE
 
-                searchEdit1!!.startAnimation(searchEditAnim)
-                searchEdit1!!.visibility = View.VISIBLE
+                searchEdit1.startAnimation(searchEditAnim)
+                searchEdit1.visibility = View.VISIBLE
 
                 permitFocus = true
-                searchEdit1!!.requestFocus()
-                showKeyboard(searchEdit1!!)
+                searchEdit1.requestFocus()
+                showKeyboard(searchEdit1)
             }
             Type.One -> {
-                midLine2!!.visibility = View.GONE
-                midLine3!!.visibility = View.GONE
-                searchEdit2!!.visibility = View.GONE
-                searchEdit3!!.visibility = View.GONE
-                searchEdit1!!.startAnimation(searchEditAnim)
-                searchEdit1!!.visibility = View.VISIBLE
+                midLine2.visibility = View.GONE
+                midLine3.visibility = View.GONE
+                searchEdit2.visibility = View.GONE
+                searchEdit3.visibility = View.GONE
+                searchEdit1.startAnimation(searchEditAnim)
+                searchEdit1.visibility = View.VISIBLE
                 permitFocus = true
-                searchEdit1!!.requestFocus()
-                showKeyboard(searchEdit1!!)
+                searchEdit1.requestFocus()
+                showKeyboard(searchEdit1)
             }
             Type.Two -> {
-                searchButton!!.startAnimation(searchBtnAnim)
-                leftButton!!.visibility = View.GONE
+                searchButton.startAnimation(searchBtnAnim)
+                leftButton.visibility = View.GONE
 
-                midLine3!!.visibility = View.GONE
-                searchEdit3!!.visibility = View.GONE
+                midLine3.visibility = View.GONE
+                searchEdit3.visibility = View.GONE
 
-                searchEdit1!!.startAnimation(searchEditAnim)
-                searchEdit1!!.visibility = View.VISIBLE
+                searchEdit1.startAnimation(searchEditAnim)
+                searchEdit1.visibility = View.VISIBLE
 
-                midLine2!!.startAnimation(searchEditAnim)
-                midLine2!!.visibility = View.VISIBLE
+                midLine2.startAnimation(searchEditAnim)
+                midLine2.visibility = View.VISIBLE
 
-                searchEdit2!!.visibility = View.VISIBLE
-                searchEdit2!!.startAnimation(searchEditAnim)
+                searchEdit2.visibility = View.VISIBLE
+                searchEdit2.startAnimation(searchEditAnim)
                 // FIXME: 26/05/2017 改变最小长度，免得太短太难点
                 permitFocus = true
-                searchEdit1!!.requestFocus()
-                showKeyboard(searchEdit1!!)
+                searchEdit1.requestFocus()
+                showKeyboard(searchEdit1)
             }
             Type.Three -> {
-                searchButton!!.startAnimation(searchBtnAnim)
-                leftButton!!.visibility = View.GONE
+                searchButton.startAnimation(searchBtnAnim)
+                leftButton.visibility = View.GONE
 
-                searchEdit1!!.startAnimation(searchEditAnim)
-                searchEdit1!!.visibility = View.VISIBLE
+                searchEdit1.startAnimation(searchEditAnim)
+                searchEdit1.visibility = View.VISIBLE
 
-                midLine2!!.visibility = View.VISIBLE
-                midLine2!!.startAnimation(searchEditAnim)
-                midLine3!!.visibility = View.VISIBLE
-                midLine3!!.startAnimation(searchEditAnim)
-                searchEdit2!!.visibility = View.VISIBLE
-                searchEdit2!!.startAnimation(searchEditAnim)
-                searchEdit3!!.visibility = View.VISIBLE
-                searchEdit3!!.startAnimation(searchEditAnim)
+                midLine2.visibility = View.VISIBLE
+                midLine2.startAnimation(searchEditAnim)
+                midLine3.visibility = View.VISIBLE
+                midLine3.startAnimation(searchEditAnim)
+                searchEdit2.visibility = View.VISIBLE
+                searchEdit2.startAnimation(searchEditAnim)
+                searchEdit3.visibility = View.VISIBLE
+                searchEdit3.startAnimation(searchEditAnim)
 
                 permitFocus = true
-                searchEdit1!!.requestFocus()
-                showKeyboard(searchEdit1!!)
+                searchEdit1.requestFocus()
+                showKeyboard(searchEdit1)
             }
         }
         onModeChangedListener?.onNewMode(mode)
@@ -448,47 +428,47 @@ class MultiSearchBar : FrameLayout {
         }
         mode = Mode.Normal
 
-        val focus = layout!!.findFocus()
+        val focus = layout.findFocus()
         focus?.clearFocus()
         permitFocus = false
 
-        leftButton!!.visibility = View.VISIBLE
-        downArrow?.visibility = View.GONE
-        underLine!!.visibility = View.GONE
-        cancelButton!!.visibility = View.INVISIBLE
-        titleText1!!.visibility = View.VISIBLE
+        leftButton.visibility = View.VISIBLE
+        downArrow.visibility = View.GONE
+        underLine.visibility = View.GONE
+        cancelButton.visibility = View.INVISIBLE
+        titleText1.visibility = View.VISIBLE
         if (!TextUtils.isEmpty(title2)) {
-            midLine!!.visibility = View.VISIBLE
-            titleText2!!.visibility = View.VISIBLE
+            midLine.visibility = View.VISIBLE
+            titleText2.visibility = View.VISIBLE
         }
-        searchEdit1!!.visibility = View.INVISIBLE
-        searchEdit2!!.visibility = View.GONE
-        searchEdit3!!.visibility = View.GONE
-        midLine2!!.visibility = View.GONE
-        midLine3!!.visibility = View.GONE
+        searchEdit1.visibility = View.INVISIBLE
+        searchEdit2.visibility = View.GONE
+        searchEdit3.visibility = View.GONE
+        midLine2.visibility = View.GONE
+        midLine3.visibility = View.GONE
 
         when (type) {
             Type.Two, Type.Three -> {
                 val searchBtnAnim = AlphaAnimation(0f, 1f)
                 searchBtnAnim.duration = 300
-                searchButton!!.animation = searchBtnAnim
+                searchButton.animation = searchBtnAnim
                 ObjectAnimator.ofFloat<View>(searchButton, View.TRANSLATION_X, 0f).start()
-                val drawable = searchButton!!.drawable as TransitionDrawable
+                val drawable = searchButton.drawable as TransitionDrawable
                 drawable.reverseTransition(100)
             }
             Type.One, Type.Popup -> {
-                searchButton!!.setImageDrawable(searchDefaultDrawable)
+                searchButton.setImageDrawable(searchDefaultDrawable)
                 ObjectAnimator.ofFloat<View>(searchButton, View.TRANSLATION_X, 0f).start()
-                searchDefaultDrawable?.reverseTransition(100)
+                searchDefaultDrawable.reverseTransition(100)
             }
         }
-        searchButton!!.visibility = View.VISIBLE
+        searchButton.visibility = View.VISIBLE
 
         fun closeSoftKeyboard(focused: View) {
             val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
             imm.hideSoftInputFromWindow(focused.windowToken, 0)
         }
-        closeSoftKeyboard(layout!!)
+        closeSoftKeyboard(layout)
 
         onModeChangedListener?.onNewMode(mode)
     }
@@ -530,7 +510,7 @@ class MultiSearchBar : FrameLayout {
 
         val leftDrawableId = typedArray.getResourceId(R.styleable.MultiSearchBar_multiSearchBarLeftSrc, -1)
         if (leftDrawableId != -1) {
-            leftButton!!.setImageResource(leftDrawableId)
+            leftButton.setImageResource(leftDrawableId)
         }
 
         val title = typedArray.getString(R.styleable.MultiSearchBar_multiSearchBarTitle1)
@@ -538,24 +518,24 @@ class MultiSearchBar : FrameLayout {
 
         title2 = typedArray.getString(R.styleable.MultiSearchBar_multiSearchBarTitle2)
         if (title2.isNullOrEmpty()) {
-            midLine!!.visibility = View.GONE
-            titleText2!!.visibility = View.GONE
+            midLine.visibility = View.GONE
+            titleText2.visibility = View.GONE
         } else {
-            titleText2!!.text = title2
+            titleText2.text = title2
         }
 
         hint1 = typedArray.getString(R.styleable.MultiSearchBar_multiSearchBarHint1)
         hint1?.let {
-            searchEdit1!!.hint = hint1
+            searchEdit1.hint = hint1
         }
 
         val maxWidth = toPixels(context, MAX_SINGLE_SEARCH_DP_WIDTH)
         when (type) {
-            Type.One, Type.Popup -> searchEdit1!!.maxWidth = maxWidth
+            Type.One, Type.Popup -> searchEdit1.maxWidth = maxWidth
             Type.Two -> {
-                searchEdit1!!.maxWidth = maxWidth / 2 - 2
-                searchEdit2!!.maxWidth = maxWidth / 2 - 2
-                searchEdit2!!.imeOptions = EditorInfo.IME_ACTION_DONE
+                searchEdit1.maxWidth = maxWidth / 2 - 2
+                searchEdit2.maxWidth = maxWidth / 2 - 2
+                searchEdit2.imeOptions = EditorInfo.IME_ACTION_DONE
             }
             else -> {
             }
@@ -563,11 +543,11 @@ class MultiSearchBar : FrameLayout {
 
         hint2 = typedArray.getString(R.styleable.MultiSearchBar_multiSearchBarHint2)
         hint2?.let {
-            searchEdit2!!.hint = hint2
+            searchEdit2.hint = hint2
         }
         hint3 = typedArray.getString(R.styleable.MultiSearchBar_multiSearchBarHint3)
         hint3?.let {
-            searchEdit3!!.hint = hint3
+            searchEdit3.hint = hint3
         }
 
         val white = LightingColorFilter(Color.WHITE, Color.WHITE)

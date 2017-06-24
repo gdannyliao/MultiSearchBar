@@ -38,7 +38,8 @@
 		</attr>
 	</declare-styleable>
 
-	<dimen name="multiSearchBarMargin16dp">16dp</dimen>
+	<dimen name="multiSearchBarMarginLarge">20dp</dimen>
+	<dimen name="multiSearchBarMarginMid">16dp</dimen>
 	<dimen name="multiSearchBarMargin">12dp</dimen>
 	<dimen name="multiSearchBarNormalTextSize">15sp</dimen>
 	<dimen name="multiSearchBarLargeTextSize">17sp</dimen>
@@ -75,7 +76,7 @@
 	</style>
 
 	<style name="MultiSearchBarPopupImage">
-		<item name="android:layout_margin">@dimen/multiSearchBarMargin</item>
+		<item name="android:layout_margin">@dimen/multiSearchBarMarginMid</item>
 		<item name="android:minWidth">16dp</item>
 		<item name="android:minHeight">16dp</item>
 	</style>
