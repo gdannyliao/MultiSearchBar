@@ -9,6 +9,7 @@ import android.graphics.LightingColorFilter
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.TransitionDrawable
+import android.support.v7.content.res.AppCompatResources
 import android.support.v7.widget.AppCompatImageView
 import android.support.v7.widget.AppCompatTextView
 import android.text.TextUtils
@@ -24,6 +25,7 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.FrameLayout
 import android.widget.PopupWindow
+import com.meican.oyster.R
 import kotlinx.android.synthetic.main.multi_search_bar.view.*
 
 /**
@@ -46,7 +48,10 @@ class MultiSearchBar @JvmOverloads constructor(
     private var hint3: String? = null
 
     interface OnModeChangedListener {
-        fun onNewMode(newMode: Mode)
+        /**
+         * @param[popItemIndex] popup当前的位置，如果是关闭状态，默认值为-1
+         */
+        fun onNewSearchBarMode(newMode: Mode, popItemIndex: Int = -1, fromClick: Boolean)
     }
 
     interface OnPopupItemClickListener {
@@ -68,7 +73,11 @@ class MultiSearchBar @JvmOverloads constructor(
     private var cancelButtonOnClickListener: OnClickListener? = null
 
     private val layout = View.inflate(context, R.layout.multi_search_bar, this)
-    private val searchDefaultDrawable = multiSearchBarButtonSearch.drawable as TransitionDrawable
+    /**
+     * 低版本不兼容transition套vector
+     */
+    private val searchDefaultDrawable = TransitionDrawable(arrayOf(AppCompatResources.getDrawable(context, R.drawable.multi_search_bar_ic_search),
+            AppCompatResources.getDrawable(context, R.drawable.multi_search_bar_ic_search_gold)))
 
     private var title2: String? = null
     private var popupDrawable1: Drawable? = null
@@ -142,8 +151,8 @@ class MultiSearchBar @JvmOverloads constructor(
         if (mode == newMode) return
 
         when (newMode) {
-            Mode.Normal -> toNormalMode(withAnimation)
-            Mode.Input -> toInputMode(withAnimation)
+            Mode.Normal -> toNormalMode(withAnimation, false)
+            Mode.Input -> toInputMode(withAnimation, false)
         }
     }
 
@@ -165,17 +174,18 @@ class MultiSearchBar @JvmOverloads constructor(
         attrs?.let {
             parseXml(attrs)
         }
+        multiSearchBarButtonSearch.setImageDrawable(searchDefaultDrawable)
         multiSearchBarButtonSearch.setOnClickListener(View.OnClickListener { v ->
             if (mode == Mode.Input) {
                 if (type == Type.Popup) popupWindow?.showAsDropDown(multiSearchBarButtonSearch)
                 return@OnClickListener
             }
-            toInputMode(true)
+            toInputMode(true, true)
         })
 
         multiSearchBarButtonCancel.setOnClickListener { v ->
             cancelButtonOnClickListener?.onClick(v)
-            toNormalMode(true)
+            toNormalMode(true, true)
         }
 
         multiSearchBarButtonLeft.setOnClickListener { v ->
@@ -253,6 +263,12 @@ class MultiSearchBar @JvmOverloads constructor(
         }
     }
 
+    fun clearAllInput() {
+        multiSearchBarEditTextSearch1.setText("")
+        multiSearchBarEditTextSearch2.setText("")
+        multiSearchBarEditTextSearch3.setText("")
+    }
+
     /**
      * 可切换当前选择的popup item，非popup模式无效
      */
@@ -281,7 +297,7 @@ class MultiSearchBar @JvmOverloads constructor(
 
     fun getPopupItem(): Int = lastChosePopupItem
 
-    private fun toInputMode(withAnimation: Boolean = true) {
+    private fun toInputMode(withAnimation: Boolean = true, fromClick: Boolean) {
         // TODO: 22/03/2017 添加动画开关
         if (mode == Mode.Input) {
             return
@@ -396,10 +412,10 @@ class MultiSearchBar @JvmOverloads constructor(
                 showKeyboard(multiSearchBarEditTextSearch1)
             }
         }
-        onModeChangedListener?.onNewMode(mode)
+        onModeChangedListener?.onNewSearchBarMode(mode, lastChosePopupItem, fromClick)
     }
 
-    private fun toNormalMode(withAnimation: Boolean = true) {
+    private fun toNormalMode(withAnimation: Boolean = true, fromClick: Boolean) {
         if (mode == Mode.Normal) {
             return
         }
@@ -447,7 +463,7 @@ class MultiSearchBar @JvmOverloads constructor(
         }
         closeSoftKeyboard(layout)
 
-        onModeChangedListener?.onNewMode(mode)
+        onModeChangedListener?.onNewSearchBarMode(mode, -1, fromClick)
     }
 
     private inner class FocusChangeListener : OnFocusChangeListener {

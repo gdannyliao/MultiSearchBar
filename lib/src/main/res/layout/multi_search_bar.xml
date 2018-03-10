@@ -45,7 +45,6 @@
 		android:layout_height="wrap_content"
 		android:id="@+id/multiSearchBarButtonSearch"
 		android:padding="@dimen/multiSearchBarMargin"
-		search:srcCompat="@drawable/multi_search_bar_transition_search"
 		android:background="@null"
 		search:layout_constraintBottom_toBottomOf="parent"
 		search:layout_constraintTop_toBottomOf="parent"
