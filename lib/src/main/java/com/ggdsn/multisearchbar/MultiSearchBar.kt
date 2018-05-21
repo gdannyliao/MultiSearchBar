@@ -25,7 +25,6 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.FrameLayout
 import android.widget.PopupWindow
-import com.meican.oyster.R
 import kotlinx.android.synthetic.main.multi_search_bar.view.*
 
 /**

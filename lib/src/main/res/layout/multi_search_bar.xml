@@ -2,7 +2,7 @@
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:search="http://schemas.android.com/apk/res-auto"
 	android:layout_width="match_parent"
-	android:layout_height="?actionBarSize"
+	android:layout_height="?android:attr/actionBarSize"
 	android:background="@color/black2A"
 	android:gravity="center_vertical"
 	>
@@ -47,8 +47,8 @@
 		android:padding="@dimen/multiSearchBarMargin"
 		android:background="@null"
 		search:layout_constraintBottom_toBottomOf="parent"
-		search:layout_constraintTop_toBottomOf="parent"
-		search:layout_constraintRight_toLeftOf="parent"
+		search:layout_constraintTop_toTopOf="parent"
+		search:layout_constraintEnd_toEndOf="parent"
 		/>
 	<android.support.v7.widget.AppCompatButton
 		android:text="取消"
@@ -60,7 +60,7 @@
 		android:background="@null"
 		android:textSize="@dimen/multiSearchBarNormalTextSize"
 		search:layout_constraintRight_toRightOf="parent"
-		search:layout_constraintTop_toBottomOf="parent"
+		search:layout_constraintTop_toTopOf="parent"
 		search:layout_constraintBottom_toBottomOf="parent"
 		/>
 
